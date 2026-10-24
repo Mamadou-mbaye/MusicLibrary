@@ -1,0 +1,6 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/MusicLibrary.Api/MusicLibrary.Api.csproj" />
+    <Project Path="src/MusicLibrary.Application/MusicLibrary.Application.csproj" />
+  </Folder>
+</Solution>

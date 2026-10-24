@@ -1,0 +1,48 @@
+# =========================
+# C# / .NET
+# =========================
+bin/
+obj/
+*.user
+*.suo
+*.userprefs
+.vs/
+*.pdb
+*.log
+TestResults/
+*.nupkg
+publish/
+
+# File con segreti locali (non committare mai password o chiavi!)
+appsettings.Development.json
+appsettings.Local.json
+secrets.json
+
+# =========================
+# Vue / Node.js
+# =========================
+node_modules/
+dist/
+dist-ssr/
+coverage/
+.vite/
+*.local
+.env
+.env.*
+!.env.example
+
+# Log dei package manager
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# =========================
+# Editor e sistema operativo
+# =========================
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+*~
