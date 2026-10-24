@@ -30,23 +30,8 @@ public class NavidromeClient : INavidromeClient
 
         return await response.Content.ReadAsStringAsync();
     }
-    public async Task<string> GetMusicFoldersAsync(CancellationToken ct = default)
-    {
-        var url = BuildUrl("getMusicFolders");
-        var response = await _http.GetAsync(url, ct);
-        response.EnsureSuccessStatusCode();
 
-        return await response.Content.ReadAsStringAsync();
-    }
-    public async Task<string> GetAlbumListAsync(CancellationToken ct = default)
-    {
-        var url = BuildUrl("getAlbumList");
-        var response = await _http.GetAsync(url, ct);
-        response.EnsureSuccessStatusCode();
-
-        return await response.Content.ReadAsStringAsync();
-    }
-    public async Task<string> GetAlbumList2Async(  Dictionary<string, string> extraParams, CancellationToken ct = default)
+    public async Task<string> GetAlbumList2Async(Dictionary<string, string> extraParams, CancellationToken ct = default)
     {
         var url = BuildUrl("getAlbumList2", extraParams);
         var response = await _http.GetAsync(url, ct);
@@ -54,31 +39,38 @@ public class NavidromeClient : INavidromeClient
 
         return await response.Content.ReadAsStringAsync();
     }
-    public async Task<string> GetIndexesAsync( CancellationToken ct = default)
-    {
-        var url = BuildUrl("getIndexes" );
-        var response = await _http.GetAsync(url, ct);
-        response.EnsureSuccessStatusCode();
 
-        return await response.Content.ReadAsStringAsync();
-    }
-public async  Task<string> SearchAllSongsAsync(int songCount,int songOffset,  CancellationToken ct = default)
+    public async Task<string> SearchAllSongsAsync(Dictionary<string, string> extraParams, CancellationToken ct = default)
     {
-        var extraParams = new Dictionary<string, string>
-    {
-        ["query"] = "",
-        ["artistCount"] = "0",
-        ["albumCount"] = "0",
-        ["songCount"] = songCount.ToString(),
-        ["songOffset"] = songOffset.ToString()
-    };
         var url = BuildUrl("search3", extraParams);
         var response = await _http.GetAsync(url, ct);
         response.EnsureSuccessStatusCode();
 
         return await response.Content.ReadAsStringAsync();
     }
+    // public async Task<string> GetMusicFoldersAsync(CancellationToken ct = default)
+    // {
+    //     var url = BuildUrl("getMusicFolders");
+    //     var response = await _http.GetAsync(url, ct);
+    //     response.EnsureSuccessStatusCode();
+    //     return await response.Content.ReadAsStringAsync();
+    // }
+    // public async Task<string> GetAlbumListAsync(CancellationToken ct = default)
+    // {
+    //     var url = BuildUrl("getAlbumList");
+    //     var response = await _http.GetAsync(url, ct);
+    //     response.EnsureSuccessStatusCode();
 
+    //     return await response.Content.ReadAsStringAsync();
+    // }
+    // public async Task<string> GetIndexesAsync( CancellationToken ct = default)
+    // {
+    //     var url = BuildUrl("getIndexes" );
+    //     var response = await _http.GetAsync(url, ct);
+    //     response.EnsureSuccessStatusCode();
+
+    //     return await response.Content.ReadAsStringAsync();
+    // }
 
     private string BuildUrl(string endpoint, Dictionary<string, string>? extraParams = null)
     {

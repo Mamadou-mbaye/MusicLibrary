@@ -1,11 +1,8 @@
 using Dapper;
-using Microsoft.Extensions.Configuration;
-using Npgsql;
-
+namespace MusicLibrary.Application.Persistence;
 public class DatabaseInitializer
 {
     private readonly INpgsqlConnectionFactory _connectionFactory;
-    private readonly string _connectionString;
     public DatabaseInitializer(INpgsqlConnectionFactory connectionFactory)
     {
         _connectionFactory =  connectionFactory;

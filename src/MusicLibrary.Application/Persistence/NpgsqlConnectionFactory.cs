@@ -1,12 +1,6 @@
-using Dapper;
 using Npgsql;
+namespace MusicLibrary.Application.Persistence;
 
-// namespace MusicLibrary.Infrastructure;
-public interface INpgsqlConnectionFactory
-{
-    Task<NpgsqlConnection> CreateOpenConnectionAsync(
-        CancellationToken ct = default);
-}
 public class NpgsqlConnectionFactory : INpgsqlConnectionFactory
 {
     private readonly NpgsqlDataSource _dataSource;
