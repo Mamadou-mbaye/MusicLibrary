@@ -59,6 +59,10 @@ It does not write directly to the Navidrome database.
 
 Audio file tags are modified only after an explicit user confirmation.
 
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+
 ## Features
 
 ### MVP
