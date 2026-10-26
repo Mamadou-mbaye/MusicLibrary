@@ -6,10 +6,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-var connectionString = 
-builder.Configuration.GetConnectionString("MusicLibrary");
-builder.Services.Configure<NavidromeOptions>(
-    builder.Configuration.GetSection("Navidrome"));
+var connectionString = builder.Configuration.GetConnectionString("MusicLibrary");
+builder.Services.Configure<NavidromeOptions>(builder.Configuration.GetSection("Navidrome"));
 
 builder.Services.AddHttpClient<NavidromeClient>();
 builder.Services.AddScoped<INavidromeClient>(sp => sp.GetRequiredService<NavidromeClient>());
@@ -26,6 +24,16 @@ builder.Services.AddScoped<IArtistService, ArtistService>();
 builder.Services.AddScoped<IAlbumService, AlbumService>();
 builder.Services.AddScoped<ITrackService, TrackService>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(
+        "AllowSpecificOrigin",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:5173").AllowAnyHeader().AllowAnyMethod();
+        }
+    );
+});
 
 var app = builder.Build();
 
@@ -37,4 +45,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.ConfigureApi();
+app.UseCors("AllowSpecificOrigin");
+
 app.Run();
