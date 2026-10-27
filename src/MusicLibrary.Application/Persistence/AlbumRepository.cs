@@ -16,15 +16,17 @@ public class AlbumRepository : IAlbumRepository
     {
         await using var connection = await _connectionFactory.CreateOpenConnectionAsync();
         return await connection.QueryAsync<Album>("""
-        SELECT 
-            id ,
-            navidrome_id AS navidromeId,
-            artist_id AS artistId,
-            name, 
-            year,
-            created_at AS createdAt,
-            updated_at AS updatedAt
-        FROM albums;
+        SELECT
+            al.id ,
+            al.navidrome_id AS navidromeId,
+            al.artist_id AS artistId,
+            al.name, 
+            al.year,
+            al.created_at AS createdAt,
+            al.updated_at AS updatedAt,
+            art.name as artist
+        FROM albums al
+        LEFT JOIN artists art ON al.artist_id = art.id;
         """);
     }
     public async Task<Album> GetAlbumByNavidromeIdAsync(string navidromeId, CancellationToken ct = default)
@@ -33,14 +35,16 @@ public class AlbumRepository : IAlbumRepository
         var album =
         await connection.QueryFirstOrDefaultAsync<Album>("""
         SELECT 
-            id ,
-            navidrome_id AS navidromeId,
-            artist_id AS artistId,
-            name, 
-            year,
-            created_at AS createdAt,
-            updated_at AS updatedAt
-        FROM albums WHERE navidrome_id = @navidrome_id;
+            al.id ,
+            al.navidrome_id AS navidromeId,
+            al.artist_id AS artistId,
+            al.name, 
+            al.year,
+            al.created_at AS createdAt,
+            al.updated_at AS updatedAt,
+            art.name as artist
+        FROM albums al WHERE navidrome_id = @navidrome_id
+        LEFT JOIN artists art ON al.artist_id = art.id;
         """, new { navidrome_id = navidromeId });
         return album ?? new Album();
     }

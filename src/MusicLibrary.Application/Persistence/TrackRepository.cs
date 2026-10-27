@@ -17,15 +17,20 @@ public class TrackRepository : ITrackRepository
         await using var connection = await _connectionFactory.CreateOpenConnectionAsync();
         return await connection.QueryAsync<Track>("""
         SELECT 
-            id ,
-            navidrome_id AS navidromeid ,
-            album_id AS albumid,
-            title ,
-            duration_seconds AS durationseconds,
-            path ,
-            created_at AS createdat,
-            updated_at AS updatedat
-        FROM tracks;
+            tr.id ,
+            tr.navidrome_id AS navidromeid ,
+            tr.album_id AS albumid,
+            tr.title ,
+            tr.duration_seconds AS durationseconds,
+            tr.path ,
+            tr.created_at AS createdat,
+            tr.updated_at AS updatedat,
+            al.name AS album,
+            al.artist_id AS artistId,
+            art.name as artist
+        FROM tracks tr
+        LEFT JOIN albums al ON tr.album_id = al.id
+        LEFT JOIN artists art ON al.artist_id = art.id;
         """);
     }
     public async Task UpsertAsync(Track track, CancellationToken ct = default)

@@ -12,6 +12,9 @@ public class Track
     public string Path { get ; set;  } = string .Empty; 
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
+    public string Album { get; set; } = string.Empty; 
+    public string Artist { get; set; } = string.Empty; 
+    public long ArtistId { get; set; }
     // public int TrackNumber { get ; set; } 
     // public JsonArray RawTags { get ; set;  } = new () ; 
 }
