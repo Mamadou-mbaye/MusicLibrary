@@ -1,12 +1,18 @@
-import { ref, computed } from 'vue'
-import { defineStore } from 'pinia'
+import { ref } from "vue";
+import { defineStore } from "pinia";
+import apiClient from "@/api/client.ts";
+import type { Artist } from "@/types/artist";
 
-export const useArtistsStore = defineStore('artists', () => {
-  const count = ref(0)
-  const doubleCount = computed(() => count.value * 2)
-  function increment() {
-    count.value++
-  }
+export const useArtistsStore = defineStore("artists", () => {
+  const artists = ref<Artist[]>([]);
 
-  return { count, doubleCount, increment }
-})
+  const ArtistsLoad = async () => {
+    try {
+      const { data } = await apiClient.get("/artists");
+      artists.value = data.artists;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  return { artists, ArtistsLoad };
+});
