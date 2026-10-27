@@ -39,6 +39,7 @@ This application adds an additional layer for:
 - TypeScript
 - Pinia
 - pnpm
+- axios
 
 ## Architecture
 
@@ -67,9 +68,9 @@ This project is licensed under the [MIT License](LICENSE).
 
 ### MVP
 
-- [ ] Connect to Navidrome using the Subsonic API
-- [ ] Import artists, albums and tracks
-- [ ] Store library data in PostgreSQL
+- [x] Connect to Navidrome using the Subsonic API
+- [x] Import artists, albums and tracks
+- [x] Store library data in PostgreSQL
 - [ ] Browse artists, albums and tracks
 - [ ] Search by title, artist, album and genre
 - [ ] Detect tracks with missing metadata
