@@ -8,7 +8,7 @@ export const useTracksStore = defineStore('tracks', () => {
   
   const TracksLoad = async () => {
     try {
-      const { data } = await apiClient.get("/albums");
+      const { data } = await apiClient.get("/tracks");
       tracks.value = data.tracks;
     } catch (error) {
       console.error(error);
