@@ -1,30 +1,32 @@
 <template>
-  <h1>Artists component</h1>
   <div>
-    <label for="filter-name">Artist name</label>
-    <input type="text" id="filter-name" v-model="filterName" />
-  </div>
+    <h1>Artists component</h1>
+    <div>
+      <label for="filter-name">Artist name</label>
+      <input type="text" id="filter-name" v-model="filterName" />
+    </div>
 
-  <table>
-    <thead>
-      <tr>
-        <th>id</th>
-        <th>navidromeId</th>
-        <th>name</th>
-        <th>createdAt</th>
-        <th>updatedAt</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="artist in artists" :key="artist.id">
-        <td>{{ artist.id }}</td>
-        <td>{{ artist.navidromeId }}</td>
-        <td>{{ artist.name }}</td>
-        <td>{{ artist.createdAt }}</td>
-        <td>{{ artist.updatedAt }}</td>
-      </tr>
-    </tbody>
-  </table>
+    <table>
+      <thead>
+        <tr>
+          <th>id</th>
+          <th>navidromeId</th>
+          <th>name</th>
+          <th>createdAt</th>
+          <th>updatedAt</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="artist in artists" :key="artist.id">
+          <td>{{ artist.id }}</td>
+          <td>{{ artist.navidromeId }}</td>
+          <td>{{ artist.name }}</td>
+          <td>{{ artist.createdAt }}</td>
+          <td>{{ artist.updatedAt }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </template>
 <style scoped>
 #div-container {
