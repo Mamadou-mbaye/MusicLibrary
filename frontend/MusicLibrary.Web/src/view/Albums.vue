@@ -1,11 +1,8 @@
 <template>
   <div>
     <h1>Albums component</h1>
-    <div>
-      <label for="filter-name">Albums name</label>
-      <input type="text" id="filter-name" v-model="filterName" />
-    </div>
-
+    <SearchForm @search="handleSearch" />
+    <DateForm @start-date-change="handleStartDateChange" @end-date-change="handleEndDateChange" />
     <table>
       <thead>
         <tr>
@@ -25,8 +22,8 @@
           <td>{{ album.artistId }}</td>
           <td>{{ album.artist }}</td>
           <td>{{ album.name }}</td>
-          <td>{{ album.createdAt }}</td>
-          <td>{{ album.updatedAt }}</td>
+          <td>{{ formatDate(album.createdAt) }}</td>
+          <td>{{ formatDate(album.updatedAt) }}</td>
         </tr>
       </tbody>
     </table>
@@ -58,19 +55,63 @@ th {
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
 import { useAlbumsStore } from '@/stores/albums';
+import SearchForm from '@/components/SearchForm.vue';
+import DateForm from '@/components/DateForm.vue';
+import { formatDate } from '@/utils/date';
+import type { Album } from '@/types/album';
 
 const albumsStore = useAlbumsStore();
 
-const filterName = ref('');
+const search = ref<string>('');
+const startDate = ref<string>('')
+const endDate = ref<string>('')
 
 const albums = computed(() => {
-  if (filterName.value.trim() === '') return albumsStore.albums;
-  return albumsStore.albums.filter((albums) =>
-    albums.name.toLowerCase().includes(filterName.value.toLowerCase()),
-  );
+  let records = albumsStore.albums
+  records = filterSearch(records)
+  records = filterDate(records)
+  return records;
 });
 
+const filterSearch = (records: Album[]) => {
+  records = records.filter((album) => {
+    if (search.value !== '') {
+      return album.name.toLowerCase().includes(search.value) ||
+        album.artist.toLowerCase().includes(search.value)
+    }
+    return true
+  });
+  return records;
+}
+const filterDate = (records: Album[]) => {
+  records = records.filter((album) => {
+    const recordCreatedAt = new Date(album.createdAt)
+    const recordUpdatedAt = new Date(album.updatedAt)
+    if (startDate.value !== '' && endDate.value !== '') {
+      return (recordCreatedAt >= new Date(startDate.value) && recordCreatedAt <= new Date(endDate.value)) ||
+        (recordUpdatedAt >= new Date(startDate.value) && recordUpdatedAt <= new Date(endDate.value));
+    } else if (startDate.value !== '') {
+      return recordCreatedAt >= new Date(startDate.value) || recordUpdatedAt >= new Date(startDate.value);
+    }
+    else if (endDate.value !== '') {
+      return recordCreatedAt <= new Date(endDate.value) || recordUpdatedAt <= new Date(endDate.value);
+    }
+    return true
+  });
+  return records;
+}
+
+const handleSearch = (searchInput: string) => {
+  search.value = searchInput
+}
+const handleStartDateChange = (dateInput: string) => {
+  startDate.value = dateInput
+}
+const handleEndDateChange = (dateInput: string) => {
+  endDate.value = dateInput
+}
 onMounted(async () => {
   await albumsStore.AlbumsLoad();
 });
+
 </script>

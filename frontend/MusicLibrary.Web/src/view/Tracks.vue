@@ -1,11 +1,8 @@
 <template>
   <div>
     <h1>Tracks component</h1>
-    <div>
-      <label for="filter-name">Track name</label>
-      <input type="text" id="filter-name" v-model="filterName" />
-    </div>
-
+    <SearchForm @search="handleSearch" />
+    <DateForm @start-date-change="handleStartDateChange" @end-date-change="handleEndDateChange" />
     <table>
       <thead>
         <tr>
@@ -13,10 +10,8 @@
           <th>navidromeId</th>
           <th>albumId</th>
           <th>album</th>
-
           <th>artistId</th>
           <th>artist</th>
-
           <th>title</th>
           <th>durationSeconds</th>
           <th>path</th>
@@ -35,8 +30,8 @@
           <td>{{ track.title }}</td>
           <td>{{ track.durationSeconds }}</td>
           <td>{{ track.path }}</td>
-          <td>{{ track.createdAt }}</td>
-          <td>{{ track.updatedAt }}</td>
+          <td>{{ formatDate(track.createdAt) }}</td>
+          <td>{{ formatDate(track.updatedAt) }}</td>
         </tr>
       </tbody>
     </table>
@@ -68,18 +63,70 @@ th {
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
 import { useTracksStore } from '@/stores/tracks';
+import SearchForm from '@/components/SearchForm.vue';
+import DateForm from '@/components/DateForm.vue';
+import { formatDate } from '@/utils/date';
+import type { Track } from '@/types/track';
 
 const tracksStore = useTracksStore();
 
-const filterName = ref('');
+const search = ref<string>('');
+const startDate = ref<string>('')
+const endDate = ref<string>('')
+
 
 const tracks = computed(() => {
-  if (filterName.value.trim() === '') return tracksStore.tracks;
-  return tracksStore.tracks.filter((tracks) =>
-    tracks.title.toLowerCase().includes(filterName.value.toLowerCase()),
-  );
+  // if (search.value.trim() === '') return tracksStore.tracks;
+  // return tracksStore.tracks.filter((track) =>
+  //   track.title.toLowerCase().includes(search.value.toLowerCase()) ||
+  //    track.artist.toLowerCase().includes(search.value.toLowerCase()) || 
+  //    track.album.toLowerCase().includes(search.value.toLowerCase()),
+  // );
+  let records = tracksStore.tracks
+  records = filterSearch(records)
+  records = filterDate(records)
+  return records;
 });
+const filterSearch = (records: Track[]) => {
+  records = records.filter((track) => {
+    if (search.value !== '') {
+      return track.title.toLowerCase().includes(search.value) ||
+        track.artist.toLowerCase().includes(search.value) ||
+        track.album.toLowerCase().includes(search.value)
+    }
+    return true
+  });
+  return records;
+}
 
+const filterDate = (records: Track[]) => {
+  records = records.filter((track) => {
+    const recordCreatedAt = new Date(track.createdAt)
+    const recordUpdatedAt = new Date(track.updatedAt)
+    if (startDate.value !== '' && endDate.value !== '') {
+      return (recordCreatedAt >= new Date(startDate.value) && recordCreatedAt <= new Date(endDate.value)) ||
+        (recordUpdatedAt >= new Date(startDate.value) && recordUpdatedAt <= new Date(endDate.value));
+    }
+    else if (startDate.value !== '') {
+      return recordCreatedAt >= new Date(startDate.value) || recordUpdatedAt >= new Date(startDate.value);
+    }
+    else if (endDate.value !== '') {
+      return recordCreatedAt <= new Date(endDate.value) || recordUpdatedAt <= new Date(endDate.value);
+    }
+    return true
+  });
+  return records;
+}
+
+const handleSearch = (searchInput: string) => {
+  search.value = searchInput
+}
+const handleStartDateChange = (dateInput: string) => {
+  startDate.value = dateInput
+}
+const handleEndDateChange = (dateInput: string) => {
+  endDate.value = dateInput
+}
 onMounted(async () => {
   await tracksStore.TracksLoad();
 });
