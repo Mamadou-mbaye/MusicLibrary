@@ -67,6 +67,7 @@ import SearchForm from '@/components/SearchForm.vue';
 import DateForm from '@/components/DateForm.vue';
 import { formatDate } from '@/utils/date';
 import type { Track } from '@/types/track';
+import { filterSearch, filterDate } from '@/utils/filters';
 
 const tracksStore = useTracksStore();
 
@@ -74,49 +75,12 @@ const search = ref<string>('');
 const startDate = ref<string>('')
 const endDate = ref<string>('')
 
-
 const tracks = computed(() => {
-  // if (search.value.trim() === '') return tracksStore.tracks;
-  // return tracksStore.tracks.filter((track) =>
-  //   track.title.toLowerCase().includes(search.value.toLowerCase()) ||
-  //    track.artist.toLowerCase().includes(search.value.toLowerCase()) || 
-  //    track.album.toLowerCase().includes(search.value.toLowerCase()),
-  // );
   let records = tracksStore.tracks
-  records = filterSearch(records)
-  records = filterDate(records)
+  records = filterSearch(records, search.value) as Track[] 
+  records = filterDate(records, startDate.value, endDate.value) as Track[]
   return records;
 });
-const filterSearch = (records: Track[]) => {
-  records = records.filter((track) => {
-    if (search.value !== '') {
-      return track.title.toLowerCase().includes(search.value) ||
-        track.artist.toLowerCase().includes(search.value) ||
-        track.album.toLowerCase().includes(search.value)
-    }
-    return true
-  });
-  return records;
-}
-
-const filterDate = (records: Track[]) => {
-  records = records.filter((track) => {
-    const recordCreatedAt = new Date(track.createdAt)
-    const recordUpdatedAt = new Date(track.updatedAt)
-    if (startDate.value !== '' && endDate.value !== '') {
-      return (recordCreatedAt >= new Date(startDate.value) && recordCreatedAt <= new Date(endDate.value)) ||
-        (recordUpdatedAt >= new Date(startDate.value) && recordUpdatedAt <= new Date(endDate.value));
-    }
-    else if (startDate.value !== '') {
-      return recordCreatedAt >= new Date(startDate.value) || recordUpdatedAt >= new Date(startDate.value);
-    }
-    else if (endDate.value !== '') {
-      return recordCreatedAt <= new Date(endDate.value) || recordUpdatedAt <= new Date(endDate.value);
-    }
-    return true
-  });
-  return records;
-}
 
 const handleSearch = (searchInput: string) => {
   search.value = searchInput

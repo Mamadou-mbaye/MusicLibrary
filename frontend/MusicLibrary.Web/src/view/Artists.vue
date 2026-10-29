@@ -60,6 +60,7 @@ import SearchForm from '@/components/SearchForm.vue';
 import DateForm from '@/components/DateForm.vue';
 import { formatDate } from '@/utils/date';
 import type { Artist } from '@/types/artist';
+import { filterSearch, filterDate } from '@/utils/filters';
 
 const artistsStore = useArtistsStore();
 
@@ -67,45 +68,12 @@ const search = ref<string>('');
 const startDate = ref<string>('')
 const endDate = ref<string>('')
 
-
 const artists = computed(() => {
-  // if (search.value.trim() === '') return artistsStore.artists;
-  // return artistsStore.artists.filter((artist) =>
-  //   artist.name.toLowerCase().includes(search.value.toLowerCase()),
-  // );
   let records = artistsStore.artists
-  records = filterSearch(records)
-  records = filterDate(records)
+  records = filterSearch(records, search.value) as Artist[]
+  records = filterDate(records, startDate.value, endDate.value) as Artist[]
   return records;
 });
-
-const filterSearch = (records: Artist[]) => {
-  records = records.filter((artist) => {
-    if (search.value !== '') {
-      return artist.name.toLowerCase().includes(search.value.toLowerCase())
-    }
-    return true
-  });
-  return records;
-}
-const filterDate = (records: Artist[]) => {
-  records = records.filter((artist) => {
-    const recordCreatedAt = new Date(artist.createdAt)
-    const recordUpdatedAt = new Date(artist.updatedAt)
-    if (startDate.value !== '' && endDate.value !== '') {
-      return (recordCreatedAt >= new Date(startDate.value) && recordCreatedAt <= new Date(endDate.value)) ||
-        (recordUpdatedAt >= new Date(startDate.value) && recordUpdatedAt <= new Date(endDate.value));
-    }
-     else if (startDate.value !== '') {
-      return recordCreatedAt >= new Date(startDate.value) || recordUpdatedAt >= new Date(startDate.value);
-    }
-    else if (endDate.value !== '') {
-      return recordCreatedAt <= new Date(endDate.value) || recordUpdatedAt <= new Date(endDate.value);
-    }
-    return true
-  });
-  return records;
-}
 
 const handleSearch = (searchInput: string) => {
   search.value = searchInput.trim()

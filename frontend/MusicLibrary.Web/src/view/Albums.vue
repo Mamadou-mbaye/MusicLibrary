@@ -59,7 +59,7 @@ import SearchForm from '@/components/SearchForm.vue';
 import DateForm from '@/components/DateForm.vue';
 import { formatDate } from '@/utils/date';
 import type { Album } from '@/types/album';
-
+import { filterSearch, filterDate } from '@/utils/filters';
 const albumsStore = useAlbumsStore();
 
 const search = ref<string>('');
@@ -68,38 +68,10 @@ const endDate = ref<string>('')
 
 const albums = computed(() => {
   let records = albumsStore.albums
-  records = filterSearch(records)
-  records = filterDate(records)
+  records = filterSearch(records, search.value) as Album[]
+  records = filterDate(records, startDate.value, endDate.value) as Album[]
   return records;
 });
-
-const filterSearch = (records: Album[]) => {
-  records = records.filter((album) => {
-    if (search.value !== '') {
-      return album.name.toLowerCase().includes(search.value) ||
-        album.artist.toLowerCase().includes(search.value)
-    }
-    return true
-  });
-  return records;
-}
-const filterDate = (records: Album[]) => {
-  records = records.filter((album) => {
-    const recordCreatedAt = new Date(album.createdAt)
-    const recordUpdatedAt = new Date(album.updatedAt)
-    if (startDate.value !== '' && endDate.value !== '') {
-      return (recordCreatedAt >= new Date(startDate.value) && recordCreatedAt <= new Date(endDate.value)) ||
-        (recordUpdatedAt >= new Date(startDate.value) && recordUpdatedAt <= new Date(endDate.value));
-    } else if (startDate.value !== '') {
-      return recordCreatedAt >= new Date(startDate.value) || recordUpdatedAt >= new Date(startDate.value);
-    }
-    else if (endDate.value !== '') {
-      return recordCreatedAt <= new Date(endDate.value) || recordUpdatedAt <= new Date(endDate.value);
-    }
-    return true
-  });
-  return records;
-}
 
 const handleSearch = (searchInput: string) => {
   search.value = searchInput
