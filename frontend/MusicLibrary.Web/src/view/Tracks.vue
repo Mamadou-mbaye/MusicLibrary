@@ -1,8 +1,10 @@
 <template>
   <div>
     <h1>Tracks component</h1>
-    <SearchForm @search="handleSearch" />
-    <DateForm @start-date-change="handleStartDateChange" @end-date-change="handleEndDateChange" />
+    <div class="filters">
+      <SearchForm @search="handleSearch" />
+      <DateForm @start-date-change="handleStartDateChange" @end-date-change="handleEndDateChange" />
+    </div>
     <table>
       <thead>
         <tr>
@@ -59,6 +61,9 @@ th {
 th {
   background-color: #da9f9f;
 }
+.filters {
+  display: flex;
+}
 </style>
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
@@ -67,30 +72,43 @@ import SearchForm from '@/components/SearchForm.vue';
 import DateForm from '@/components/DateForm.vue';
 import { formatDate } from '@/utils/date';
 import type { Track } from '@/types/track';
-import { filterSearch, filterDate } from '@/utils/filters';
+import { filterSearch, filterDate, filterArtist, filterAlbum } from '@/utils/filters';
+import { useRoute } from 'vue-router';
 
 const tracksStore = useTracksStore();
 
 const search = ref<string>('');
-const startDate = ref<string>('')
-const endDate = ref<string>('')
+const startDate = ref<string>('');
+const endDate = ref<string>('');
 
 const tracks = computed(() => {
-  let records = tracksStore.tracks
-  records = filterSearch(records, search.value) as Track[] 
-  records = filterDate(records, startDate.value, endDate.value) as Track[]
+  let records = tracksStore.tracks;
+  records = filterArtist(records, artistId.value) as Track[];
+  records = filterAlbum(records, albumId.value) as Track[];
+  records = filterSearch(records, search.value) as Track[];
+  records = filterDate(records, startDate.value, endDate.value) as Track[];
   return records;
 });
 
+const route = useRoute();
+const artistId = computed(() => {
+  const id = route.params.artistId;
+  return typeof id === 'string' ? Number(id) : null;
+});
+const albumId = computed(() => {
+  const id = route.params.albumId;
+  return typeof id === 'string' ? Number(id) : null;
+});
+
 const handleSearch = (searchInput: string) => {
-  search.value = searchInput
-}
+  search.value = searchInput;
+};
 const handleStartDateChange = (dateInput: string) => {
-  startDate.value = dateInput
-}
+  startDate.value = dateInput;
+};
 const handleEndDateChange = (dateInput: string) => {
-  endDate.value = dateInput
-}
+  endDate.value = dateInput;
+};
 onMounted(async () => {
   await tracksStore.TracksLoad();
 });

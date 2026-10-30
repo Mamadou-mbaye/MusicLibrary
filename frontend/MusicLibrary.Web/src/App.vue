@@ -5,11 +5,11 @@
   </div>
 </template>
 <style scoped>
-#app{
+#app {
   display: flex;
 }
 </style>
 <script setup lang="ts">
-import { RouterView } from "vue-router";
-import Sidebar from "./components/layout/Sidebar.vue";
+import { RouterView } from 'vue-router';
+import Sidebar from './components/layout/Sidebar.vue';
 </script>

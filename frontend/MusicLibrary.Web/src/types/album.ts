@@ -1,4 +1,4 @@
-export interface Album{
+export interface Album {
   id: number;
   navidromeId: string;
   artistId: number;

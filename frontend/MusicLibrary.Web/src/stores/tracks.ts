@@ -1,14 +1,14 @@
 import { ref } from 'vue';
 import { defineStore } from 'pinia';
-import apiClient from "@/api/client";
+import apiClient from '@/api/client';
 import type { Track } from '@/types/track';
 
 export const useTracksStore = defineStore('tracks', () => {
   const tracks = ref<Track[]>([]);
-  
+
   const TracksLoad = async () => {
     try {
-      const { data } = await apiClient.get("/tracks");
+      const { data } = await apiClient.get('/tracks');
       tracks.value = data.tracks;
     } catch (error) {
       console.error(error);
