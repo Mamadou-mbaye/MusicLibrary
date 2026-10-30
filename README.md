@@ -71,8 +71,8 @@ This project is licensed under the [MIT License](LICENSE).
 - [x] Connect to Navidrome using the Subsonic API
 - [x] Import artists, albums and tracks
 - [x] Store library data in PostgreSQL
-- [ ] Browse artists, albums and tracks
-- [ ] Search by title, artist, album and genre
+- [x] Browse artists, albums and tracks
+- [x] Search by title, artist, album and genre
 - [ ] Detect tracks with missing metadata
 - [ ] Detect possible duplicates
 
