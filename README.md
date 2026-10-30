@@ -99,8 +99,8 @@ dotnet run
 
 ```bash
 cd frontend
-pnpm install
-pnpm dev
+vp install
+vp dev
 ```
 
 ## Project Status
