@@ -74,7 +74,7 @@ This project is licensed under the [MIT License](LICENSE).
 - [x] Browse artists, albums and tracks
 - [x] Search by title, artist, album and genre
 - [x] Detect tracks with missing metadata
-- [ ] Detect possible duplicates
+- [x] Detect possible duplicates
 
 ### Later
 

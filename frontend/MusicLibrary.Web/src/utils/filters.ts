@@ -66,4 +66,31 @@ const filterByIdentificationStatus = (
     return identified ? !hasUnknownField : hasUnknownField;
   });
 };
-export { filterSearch, filterDate, filterArtist, filterAlbum, filterByIdentificationStatus };
+
+const filterDuplicate = (records: (Artist | Album | Track)[], duplicate: boolean) => {
+  if (!duplicate) return records;
+  const counts = new Map<string, number>();
+
+  for (const record of records) {
+    const key =
+      'title' in record ? record.title.trim().toLowerCase() : record.name.trim().toLowerCase();
+
+    counts.set(key, (counts.get(key) ?? 0) + 1);
+  }
+
+  return records.filter((record) => {
+    const key =
+      'title' in record ? record.title.trim().toLowerCase() : record.name.trim().toLowerCase();
+
+    return (counts.get(key) ?? 0) > 1;
+  });
+};
+
+export {
+  filterSearch,
+  filterDate,
+  filterArtist,
+  filterAlbum,
+  filterByIdentificationStatus,
+  filterDuplicate,
+};
