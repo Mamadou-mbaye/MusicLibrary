@@ -2,28 +2,25 @@ import type { Artist } from '@/types/artist';
 import type { Album } from '@/types/album';
 import type { Track } from '@/types/track';
 
+const getFilterFields = (record: Artist | Album | Track): string[] => {
+  if ('title' in record) return [record.title, record.artist, record.album];
+
+  if ('name' in record) {
+    return 'artist' in record && typeof record.artist === 'string'
+      ? [record.name, record.artist]
+      : [record.name];
+  }
+
+  return [];
+};
+
 const filterSearch = (records: (Artist | Album | Track)[], search: string) => {
   const query = search.toLowerCase();
   if (query === '') return records;
 
   return records.filter((record) => {
-    if ('title' in record) {
-      return (
-        record.title.toLowerCase().includes(query) ||
-        record.artist.toLowerCase().includes(query) ||
-        record.album.toLowerCase().includes(query)
-      );
-    }
-
-    if ('name' in record) {
-      return (
-        record.name.toLowerCase().includes(query) ||
-        ('artist' in record &&
-          typeof record.artist === 'string' &&
-          record.artist.toLowerCase().includes(query))
-      );
-    }
-    return false;
+    const isRecord = (value: string) => value.toLowerCase().includes(query);
+    return getFilterFields(record).some(isRecord);
   });
 };
 
@@ -56,4 +53,17 @@ const filterAlbum = (records: Track[], albumId: number | null) => {
   return records;
 };
 
-export { filterSearch, filterDate, filterArtist, filterAlbum };
+const filterByIdentificationStatus = (
+  records: (Artist | Album | Track)[],
+  identified: boolean,
+  unidentified: boolean,
+) => {
+  if (identified === unidentified) return records;
+  const isUnknown = (value: string) => value.toLowerCase().includes('unknown');
+
+  return records.filter((record) => {
+    const hasUnknownField = getFilterFields(record).some(isUnknown);
+    return identified ? !hasUnknownField : hasUnknownField;
+  });
+};
+export { filterSearch, filterDate, filterArtist, filterAlbum, filterByIdentificationStatus };

@@ -1,9 +1,11 @@
 <template>
   <div>
     <h1>Albums component</h1>
+    <div>Albums count: {{ albums.length }}</div>
     <div class="filters">
       <SearchForm @search="handleSearch" />
       <DateForm @start-date-change="handleStartDateChange" @end-date-change="handleEndDateChange" />
+      <CheckForm @handle-identified="handleIdentified" @handle-unidentified="handleUnidentified" />
     </div>
     <table>
       <thead>
@@ -57,26 +59,37 @@ th {
 }
 .filters {
   display: flex;
+  gap: 1vw;
 }
 </style>
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
+import { useRoute } from 'vue-router';
+import type { Album } from '@/types/album';
 import { useAlbumsStore } from '@/stores/albums';
+import { formatDate } from '@/utils/date';
+import {
+  filterSearch,
+  filterDate,
+  filterArtist,
+  filterByIdentificationStatus,
+} from '@/utils/filters';
 import SearchForm from '@/components/SearchForm.vue';
 import DateForm from '@/components/DateForm.vue';
-import { formatDate } from '@/utils/date';
-import type { Album } from '@/types/album';
-import { filterSearch, filterDate, filterArtist } from '@/utils/filters';
-import { useRoute } from 'vue-router';
+import CheckForm from '@/components/CheckForm.vue';
 
 const albumsStore = useAlbumsStore();
 
 const search = ref<string>('');
 const startDate = ref<string>('');
 const endDate = ref<string>('');
+const identified = ref<boolean>(false);
+const unidentified = ref<boolean>(false);
 
 const albums = computed(() => {
   let records = albumsStore.albums;
+
+  records = filterByIdentificationStatus(records, identified.value, unidentified.value) as Album[];
   records = filterArtist(records, artistId.value) as Album[];
   records = filterSearch(records, search.value) as Album[];
   records = filterDate(records, startDate.value, endDate.value) as Album[];
@@ -89,15 +102,12 @@ const artistId = computed(() => {
   return typeof id === 'string' ? Number(id) : null;
 });
 
-const handleSearch = (searchInput: string) => {
-  search.value = searchInput;
-};
-const handleStartDateChange = (dateInput: string) => {
-  startDate.value = dateInput;
-};
-const handleEndDateChange = (dateInput: string) => {
-  endDate.value = dateInput;
-};
+const handleSearch = (searchInput: string) => (search.value = searchInput);
+const handleStartDateChange = (dateInput: string) => (startDate.value = dateInput);
+const handleEndDateChange = (dateInput: string) => (endDate.value = dateInput);
+const handleIdentified = (checkInput: boolean) => (identified.value = checkInput);
+const handleUnidentified = (checkInput: boolean) => (unidentified.value = checkInput);
+
 onMounted(async () => {
   await albumsStore.AlbumsLoad();
 });

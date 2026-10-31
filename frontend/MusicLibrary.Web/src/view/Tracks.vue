@@ -1,9 +1,11 @@
 <template>
   <div>
     <h1>Tracks component</h1>
+    <div>Tracks count: {{ tracks.length }}</div>
     <div class="filters">
       <SearchForm @search="handleSearch" />
       <DateForm @start-date-change="handleStartDateChange" @end-date-change="handleEndDateChange" />
+      <CheckForm @handle-identified="handleIdentified" @handle-unidentified="handleUnidentified" />
     </div>
     <table>
       <thead>
@@ -63,26 +65,38 @@ th {
 }
 .filters {
   display: flex;
+  gap: 1vw;
 }
 </style>
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
+import { useRoute } from 'vue-router';
+import type { Track } from '@/types/track';
 import { useTracksStore } from '@/stores/tracks';
+import { formatDate } from '@/utils/date';
+import {
+  filterSearch,
+  filterDate,
+  filterArtist,
+  filterAlbum,
+  filterByIdentificationStatus,
+} from '@/utils/filters';
 import SearchForm from '@/components/SearchForm.vue';
 import DateForm from '@/components/DateForm.vue';
-import { formatDate } from '@/utils/date';
-import type { Track } from '@/types/track';
-import { filterSearch, filterDate, filterArtist, filterAlbum } from '@/utils/filters';
-import { useRoute } from 'vue-router';
+import CheckForm from '@/components/CheckForm.vue';
 
 const tracksStore = useTracksStore();
 
 const search = ref<string>('');
 const startDate = ref<string>('');
 const endDate = ref<string>('');
+const identified = ref<boolean>(false);
+const unidentified = ref<boolean>(false);
 
 const tracks = computed(() => {
   let records = tracksStore.tracks;
+
+  records = filterByIdentificationStatus(records, identified.value, unidentified.value) as Track[];
   records = filterArtist(records, artistId.value) as Track[];
   records = filterAlbum(records, albumId.value) as Track[];
   records = filterSearch(records, search.value) as Track[];
@@ -100,15 +114,12 @@ const albumId = computed(() => {
   return typeof id === 'string' ? Number(id) : null;
 });
 
-const handleSearch = (searchInput: string) => {
-  search.value = searchInput;
-};
-const handleStartDateChange = (dateInput: string) => {
-  startDate.value = dateInput;
-};
-const handleEndDateChange = (dateInput: string) => {
-  endDate.value = dateInput;
-};
+const handleSearch = (searchInput: string) => (search.value = searchInput);
+const handleStartDateChange = (dateInput: string) => (startDate.value = dateInput);
+const handleEndDateChange = (dateInput: string) => (endDate.value = dateInput);
+const handleIdentified = (checkInput: boolean) => (identified.value = checkInput);
+const handleUnidentified = (checkInput: boolean) => (unidentified.value = checkInput);
+
 onMounted(async () => {
   await tracksStore.TracksLoad();
 });

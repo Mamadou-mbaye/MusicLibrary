@@ -1,9 +1,11 @@
 <template>
   <div>
     <h1>Artists component</h1>
+    <div>Artists count: {{ artists.length }}</div>
     <div class="filters">
       <SearchForm @search="handleSearch" />
       <DateForm @start-date-change="handleStartDateChange" @end-date-change="handleEndDateChange" />
+      <CheckForm @handle-identified="handleIdentified" @handle-unidentified="handleUnidentified" />
     </div>
 
     <table>
@@ -54,41 +56,44 @@ th {
 th {
   background-color: #da9f9f;
 }
+
 .filters {
   display: flex;
+  gap: 1vw;
 }
 </style>
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
+import type { Artist } from '@/types/artist';
 import { useArtistsStore } from '@/stores/artists';
+import { formatDate } from '@/utils/date';
+import { filterSearch, filterDate, filterByIdentificationStatus } from '@/utils/filters';
 import SearchForm from '@/components/SearchForm.vue';
 import DateForm from '@/components/DateForm.vue';
-import { formatDate } from '@/utils/date';
-import type { Artist } from '@/types/artist';
-import { filterSearch, filterDate } from '@/utils/filters';
+import CheckForm from '@/components/CheckForm.vue';
 
 const artistsStore = useArtistsStore();
 
 const search = ref<string>('');
 const startDate = ref<string>('');
 const endDate = ref<string>('');
+const identified = ref<boolean>(false);
+const unidentified = ref<boolean>(false);
 
 const artists = computed(() => {
   let records = artistsStore.artists;
+  records = filterByIdentificationStatus(records, identified.value, unidentified.value) as Artist[];
   records = filterSearch(records, search.value) as Artist[];
   records = filterDate(records, startDate.value, endDate.value) as Artist[];
   return records;
 });
 
-const handleSearch = (searchInput: string) => {
-  search.value = searchInput.trim();
-};
-const handleStartDateChange = (dateInput: string) => {
-  startDate.value = dateInput.trim();
-};
-const handleEndDateChange = (dateInput: string) => {
-  endDate.value = dateInput.trim();
-};
+const handleSearch = (searchInput: string) => (search.value = searchInput.trim());
+const handleStartDateChange = (dateInput: string) => (startDate.value = dateInput.trim());
+const handleEndDateChange = (dateInput: string) => (endDate.value = dateInput.trim());
+const handleIdentified = (checkInput: boolean) => (identified.value = checkInput);
+const handleUnidentified = (checkInput: boolean) => (unidentified.value = checkInput);
+
 onMounted(async () => {
   await artistsStore.ArtistsLoad();
 });
