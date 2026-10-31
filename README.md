@@ -73,7 +73,7 @@ This project is licensed under the [MIT License](LICENSE).
 - [x] Store library data in PostgreSQL
 - [x] Browse artists, albums and tracks
 - [x] Search by title, artist, album and genre
-- [ ] Detect tracks with missing metadata
+- [x] Detect tracks with missing metadata
 - [ ] Detect possible duplicates
 
 ### Later
