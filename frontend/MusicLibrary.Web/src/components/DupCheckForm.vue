@@ -1,6 +1,6 @@
 <template>
   <div>
-    <label for="dupplicate">Dupplicate</label>
+    <label for="dupplicate">Duplicates</label>
     <input type="checkbox" @input="handleDupplicate" id="dupplicate" />
   </div>
 </template>

@@ -6,6 +6,7 @@
       <SearchForm @search="handleSearch" />
       <DateForm @start-date-change="handleStartDateChange" @end-date-change="handleEndDateChange" />
       <CheckForm @handle-identified="handleIdentified" @handle-unidentified="handleUnidentified" />
+      <DupCheckForm @handle-dupplicate="handleDupplicate" />
     </div>
     <table>
       <thead>
@@ -73,10 +74,12 @@ import {
   filterDate,
   filterArtist,
   filterByIdentificationStatus,
+  filterDuplicate
 } from '@/utils/filters';
 import SearchForm from '@/components/SearchForm.vue';
 import DateForm from '@/components/DateForm.vue';
 import CheckForm from '@/components/CheckForm.vue';
+import DupCheckForm from '@/components/DupCheckForm.vue';
 
 const albumsStore = useAlbumsStore();
 
@@ -85,6 +88,7 @@ const startDate = ref<string>('');
 const endDate = ref<string>('');
 const identified = ref<boolean>(false);
 const unidentified = ref<boolean>(false);
+const duplicate = ref<boolean>(false);
 
 const albums = computed(() => {
   let records = albumsStore.albums;
@@ -93,6 +97,7 @@ const albums = computed(() => {
   records = filterArtist(records, artistId.value) as Album[];
   records = filterSearch(records, search.value) as Album[];
   records = filterDate(records, startDate.value, endDate.value) as Album[];
+  records = filterDuplicate(records, duplicate.value) as Album[];
   return records;
 });
 
@@ -107,6 +112,7 @@ const handleStartDateChange = (dateInput: string) => (startDate.value = dateInpu
 const handleEndDateChange = (dateInput: string) => (endDate.value = dateInput);
 const handleIdentified = (checkInput: boolean) => (identified.value = checkInput);
 const handleUnidentified = (checkInput: boolean) => (unidentified.value = checkInput);
+const handleDupplicate = (checkInput: boolean) => (duplicate.value = checkInput);
 
 onMounted(async () => {
   await albumsStore.AlbumsLoad();

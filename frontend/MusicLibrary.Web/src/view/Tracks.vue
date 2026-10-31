@@ -6,7 +6,7 @@
       <SearchForm @search="handleSearch" />
       <DateForm @start-date-change="handleStartDateChange" @end-date-change="handleEndDateChange" />
       <CheckForm @handle-identified="handleIdentified" @handle-unidentified="handleUnidentified" />
-      <DuppCheckForm @handle-dupplicate="handleDupplicate" />
+      <DupCheckForm @handle-dupplicate="handleDupplicate" />
     </div>
     <table>
       <thead>
@@ -87,7 +87,7 @@ import {
 import SearchForm from '@/components/SearchForm.vue';
 import DateForm from '@/components/DateForm.vue';
 import CheckForm from '@/components/CheckForm.vue';
-import DuppCheckForm from '@/components/DuppCheckForm.vue';
+import DupCheckForm from '@/components/DupCheckForm.vue';
 
 const tracksStore = useTracksStore();
 

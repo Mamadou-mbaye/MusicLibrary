@@ -6,6 +6,7 @@
       <SearchForm @search="handleSearch" />
       <DateForm @start-date-change="handleStartDateChange" @end-date-change="handleEndDateChange" />
       <CheckForm @handle-identified="handleIdentified" @handle-unidentified="handleUnidentified" />
+      <DupCheckForm @handle-dupplicate="handleDupplicate" />
     </div>
 
     <table>
@@ -67,10 +68,11 @@ import { ref, onMounted, computed } from 'vue';
 import type { Artist } from '@/types/artist';
 import { useArtistsStore } from '@/stores/artists';
 import { formatDate } from '@/utils/date';
-import { filterSearch, filterDate, filterByIdentificationStatus } from '@/utils/filters';
+import { filterSearch, filterDate, filterByIdentificationStatus,filterDuplicate } from '@/utils/filters';
 import SearchForm from '@/components/SearchForm.vue';
 import DateForm from '@/components/DateForm.vue';
 import CheckForm from '@/components/CheckForm.vue';
+import DupCheckForm from '@/components/DupCheckForm.vue';
 
 const artistsStore = useArtistsStore();
 
@@ -79,12 +81,14 @@ const startDate = ref<string>('');
 const endDate = ref<string>('');
 const identified = ref<boolean>(false);
 const unidentified = ref<boolean>(false);
+const duplicate = ref<boolean>(false);
 
 const artists = computed(() => {
   let records = artistsStore.artists;
   records = filterByIdentificationStatus(records, identified.value, unidentified.value) as Artist[];
   records = filterSearch(records, search.value) as Artist[];
   records = filterDate(records, startDate.value, endDate.value) as Artist[];
+  records = filterDuplicate(records, duplicate.value) as Artist[];
   return records;
 });
 
@@ -93,6 +97,7 @@ const handleStartDateChange = (dateInput: string) => (startDate.value = dateInpu
 const handleEndDateChange = (dateInput: string) => (endDate.value = dateInput.trim());
 const handleIdentified = (checkInput: boolean) => (identified.value = checkInput);
 const handleUnidentified = (checkInput: boolean) => (unidentified.value = checkInput);
+const handleDupplicate = (checkInput: boolean) => (duplicate.value = checkInput);
 
 onMounted(async () => {
   await artistsStore.ArtistsLoad();
