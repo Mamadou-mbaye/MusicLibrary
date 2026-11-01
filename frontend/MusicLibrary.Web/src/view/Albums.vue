@@ -2,7 +2,7 @@
   <div>
     <h1>Albums component</h1>
     <div>
-    <div>Albums count: {{ albums.length }}</div>
+      <div>Albums count: {{ albums.length }}</div>
       <button @click="handleSync">Sync albums</button>
     </div>
     <div class="filters">
@@ -18,10 +18,10 @@
           <th>id</th>
           <th>navidromeId</th>
           <th>artistId</th>
-          <th>artist</th>
-          <th>name</th>
-          <th>createdAt</th>
-          <th>updatedAt</th>
+          <th @click="handleSort('artist')">artist</th>
+          <th @click="handleSort('name')">name</th>
+          <th @click="handleSort('createdAt')">createdAt</th>
+          <th @click="handleSort('updatedAt')">updatedAt</th>
         </tr>
       </thead>
       <tbody>
@@ -77,8 +77,9 @@ import {
   filterDate,
   filterArtist,
   filterByIdentificationStatus,
-  filterDuplicate
+  filterDuplicate,
 } from '@/utils/filters';
+import { createSortState, orderByField, toggleSort } from '@/utils/sort';
 import SearchForm from '@/components/SearchForm.vue';
 import DateForm from '@/components/DateForm.vue';
 import CheckForm from '@/components/CheckForm.vue';
@@ -92,6 +93,7 @@ const endDate = ref<string>('');
 const identified = ref<boolean>(false);
 const unidentified = ref<boolean>(false);
 const duplicate = ref<boolean>(false);
+const sortState = ref(createSortState<Album>('name'));
 
 const albums = computed(() => {
   let records = albumsStore.albums;
@@ -116,7 +118,11 @@ const handleEndDateChange = (dateInput: string) => (endDate.value = dateInput);
 const handleIdentified = (checkInput: boolean) => (identified.value = checkInput);
 const handleUnidentified = (checkInput: boolean) => (unidentified.value = checkInput);
 const handleDupplicate = (checkInput: boolean) => (duplicate.value = checkInput);
-const handleSync = async () => await albumsStore.AlbumsSync()
+const handleSync = async () => await albumsStore.AlbumsSync();
+const handleSort = (field: keyof Album) => {
+  sortState.value = toggleSort(sortState.value, field);
+  albumsStore.albums = orderByField(albumsStore.albums, field, sortState.value.direction);
+};
 
 onMounted(async () => {
   await albumsStore.AlbumsLoad();

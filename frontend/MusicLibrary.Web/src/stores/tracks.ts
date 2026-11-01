@@ -15,13 +15,13 @@ export const useTracksStore = defineStore('tracks', () => {
     }
   };
 
-  const  TracksSync = async () => {
+  const TracksSync = async () => {
     try {
-    await apiClient.post("/tracks/sync");
-    await  TracksLoad();
-    }catch(error){
-      console.error(error)
+      await apiClient.post('/tracks/sync');
+      await TracksLoad();
+    } catch (error) {
+      console.error(error);
     }
   };
-  return { tracks, TracksLoad,TracksSync };
+  return { tracks, TracksLoad, TracksSync };
 });

@@ -17,10 +17,11 @@
           <th>id</th>
           <th>navidromeId</th>
           <th>albumId</th>
-          <th>album</th>
+          <th @click="handleSort('album')">album</th>
           <th>artistId</th>
-          <th>artist</th>
-          <th>title</th>
+          <th @click="handleSort('artist')">artist</th>
+          <th @click="handleSort('title')">title</th>
+
           <th>durationSeconds</th>
           <th>path</th>
           <th>createdAt</th>
@@ -87,6 +88,7 @@ import {
   filterByIdentificationStatus,
   filterDuplicate,
 } from '@/utils/filters';
+import { createSortState, orderByField, toggleSort } from '@/utils/sort';
 import SearchForm from '@/components/SearchForm.vue';
 import DateForm from '@/components/DateForm.vue';
 import CheckForm from '@/components/CheckForm.vue';
@@ -100,6 +102,7 @@ const endDate = ref<string>('');
 const identified = ref<boolean>(false);
 const unidentified = ref<boolean>(false);
 const duplicate = ref<boolean>(false);
+const sortState = ref(createSortState<Track>('title'));
 
 const tracks = computed(() => {
   let records = tracksStore.tracks;
@@ -130,6 +133,10 @@ const handleIdentified = (checkInput: boolean) => (identified.value = checkInput
 const handleUnidentified = (checkInput: boolean) => (unidentified.value = checkInput);
 const handleDupplicate = (checkInput: boolean) => (duplicate.value = checkInput);
 const handleSync = async () => await tracksStore.TracksSync();
+const handleSort = (field: keyof Track) => {
+  sortState.value = toggleSort(sortState.value, field);
+  tracksStore.tracks = orderByField(tracksStore.tracks, field, sortState.value.direction);
+};
 
 onMounted(async () => {
   await tracksStore.TracksLoad();

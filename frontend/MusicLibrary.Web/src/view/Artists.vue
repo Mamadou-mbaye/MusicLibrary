@@ -2,9 +2,7 @@
   <div>
     <h1>Artists component</h1>
     <div>
-      <div>
-        Artists count: {{ artists.length }}
-      </div>
+      <div>Artists count: {{ artists.length }}</div>
       <button @click="handleSync">Sync artists</button>
     </div>
     <div class="filters">
@@ -21,9 +19,9 @@
           <th></th>
           <th>id</th>
           <th>navidromeId</th>
-          <th>name</th>
-          <th>createdAt</th>
-          <th>updatedAt</th>
+          <th @click="handleSort('name')">name</th>
+          <th @click="handleSort('createdAt')">createdAt</th>
+          <th @click="handleSort('updatedAt')">updatedAt</th>
         </tr>
       </thead>
       <tbody>
@@ -73,7 +71,13 @@ import { ref, onMounted, computed } from 'vue';
 import type { Artist } from '@/types/artist';
 import { useArtistsStore } from '@/stores/artists';
 import { formatDate } from '@/utils/date';
-import { filterSearch, filterDate, filterByIdentificationStatus, filterDuplicate } from '@/utils/filters';
+import {
+  filterSearch,
+  filterDate,
+  filterByIdentificationStatus,
+  filterDuplicate,
+} from '@/utils/filters';
+import { createSortState, orderByField, toggleSort } from '@/utils/sort';
 import SearchForm from '@/components/SearchForm.vue';
 import DateForm from '@/components/DateForm.vue';
 import CheckForm from '@/components/CheckForm.vue';
@@ -87,6 +91,7 @@ const endDate = ref<string>('');
 const identified = ref<boolean>(false);
 const unidentified = ref<boolean>(false);
 const duplicate = ref<boolean>(false);
+const sortState = ref(createSortState<Artist>('name'));
 
 const artists = computed(() => {
   let records = artistsStore.artists;
@@ -103,7 +108,11 @@ const handleEndDateChange = (dateInput: string) => (endDate.value = dateInput.tr
 const handleIdentified = (checkInput: boolean) => (identified.value = checkInput);
 const handleUnidentified = (checkInput: boolean) => (unidentified.value = checkInput);
 const handleDupplicate = (checkInput: boolean) => (duplicate.value = checkInput);
-const handleSync = async () =>   await artistsStore.ArtistsSync();
+const handleSync = async () => await artistsStore.ArtistsSync();
+const handleSort = (field: keyof Artist) => {
+  sortState.value = toggleSort(sortState.value, field);
+  artistsStore.artists = orderByField(artistsStore.artists, field, sortState.value.direction);
+};
 
 onMounted(async () => {
   await artistsStore.ArtistsLoad();
