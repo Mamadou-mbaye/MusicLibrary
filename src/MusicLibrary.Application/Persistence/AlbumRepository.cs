@@ -43,8 +43,9 @@ public class AlbumRepository : IAlbumRepository
             al.created_at AS createdAt,
             al.updated_at AS updatedAt,
             art.name as artist
-        FROM albums al WHERE navidrome_id = @navidrome_id
-        LEFT JOIN artists art ON al.artist_id = art.id;
+        FROM albums al
+        LEFT JOIN artists art ON al.artist_id = art.id
+        WHERE al.navidrome_id = @navidrome_id;
         """, new { navidrome_id = navidromeId });
         return album ?? new Album();
     }
