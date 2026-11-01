@@ -1,7 +1,12 @@
 <template>
   <div>
     <h1>Artists component</h1>
-    <div>Artists count: {{ artists.length }}</div>
+    <div>
+      <div>
+        Artists count: {{ artists.length }}
+      </div>
+      <button @click="handleSync">Sync artists</button>
+    </div>
     <div class="filters">
       <SearchForm @search="handleSearch" />
       <DateForm @start-date-change="handleStartDateChange" @end-date-change="handleEndDateChange" />
@@ -68,7 +73,7 @@ import { ref, onMounted, computed } from 'vue';
 import type { Artist } from '@/types/artist';
 import { useArtistsStore } from '@/stores/artists';
 import { formatDate } from '@/utils/date';
-import { filterSearch, filterDate, filterByIdentificationStatus,filterDuplicate } from '@/utils/filters';
+import { filterSearch, filterDate, filterByIdentificationStatus, filterDuplicate } from '@/utils/filters';
 import SearchForm from '@/components/SearchForm.vue';
 import DateForm from '@/components/DateForm.vue';
 import CheckForm from '@/components/CheckForm.vue';
@@ -98,6 +103,7 @@ const handleEndDateChange = (dateInput: string) => (endDate.value = dateInput.tr
 const handleIdentified = (checkInput: boolean) => (identified.value = checkInput);
 const handleUnidentified = (checkInput: boolean) => (unidentified.value = checkInput);
 const handleDupplicate = (checkInput: boolean) => (duplicate.value = checkInput);
+const handleSync = async () =>   await artistsStore.ArtistsSync();
 
 onMounted(async () => {
   await artistsStore.ArtistsLoad();

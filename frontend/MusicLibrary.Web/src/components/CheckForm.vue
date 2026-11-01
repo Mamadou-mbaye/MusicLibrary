@@ -8,8 +8,6 @@
   </div>
 </template>
 <script setup lang="ts">
-import { defineEmits } from 'vue';
-
 const emit = defineEmits<{
   'handle-identified': [value: boolean];
   'handle-unidentified': [value: boolean];

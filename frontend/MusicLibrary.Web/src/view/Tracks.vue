@@ -1,7 +1,10 @@
 <template>
   <div>
     <h1>Tracks component</h1>
-    <div>Tracks count: {{ tracks.length }}</div>
+    <div>
+      <div>Tracks count: {{ tracks.length }}</div>
+      <button @click="handleSync">Sync tracks</button>
+    </div>
     <div class="filters">
       <SearchForm @search="handleSearch" />
       <DateForm @start-date-change="handleStartDateChange" @end-date-change="handleEndDateChange" />
@@ -126,6 +129,7 @@ const handleEndDateChange = (dateInput: string) => (endDate.value = dateInput);
 const handleIdentified = (checkInput: boolean) => (identified.value = checkInput);
 const handleUnidentified = (checkInput: boolean) => (unidentified.value = checkInput);
 const handleDupplicate = (checkInput: boolean) => (duplicate.value = checkInput);
+const handleSync = async () => await tracksStore.TracksSync();
 
 onMounted(async () => {
   await tracksStore.TracksLoad();

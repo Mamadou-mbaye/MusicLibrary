@@ -1,7 +1,10 @@
 <template>
   <div>
     <h1>Albums component</h1>
+    <div>
     <div>Albums count: {{ albums.length }}</div>
+      <button @click="handleSync">Sync albums</button>
+    </div>
     <div class="filters">
       <SearchForm @search="handleSearch" />
       <DateForm @start-date-change="handleStartDateChange" @end-date-change="handleEndDateChange" />
@@ -113,6 +116,7 @@ const handleEndDateChange = (dateInput: string) => (endDate.value = dateInput);
 const handleIdentified = (checkInput: boolean) => (identified.value = checkInput);
 const handleUnidentified = (checkInput: boolean) => (unidentified.value = checkInput);
 const handleDupplicate = (checkInput: boolean) => (duplicate.value = checkInput);
+const handleSync = async () => await albumsStore.AlbumsSync()
 
 onMounted(async () => {
   await albumsStore.AlbumsLoad();
