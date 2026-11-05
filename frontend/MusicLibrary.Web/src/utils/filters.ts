@@ -13,6 +13,11 @@ const getFilterFields = (record: Artist | Album | Track): string[] => {
 
   return [];
 };
+const getFilterField = (record: Artist | Album | Track): string[] => {
+  if ('title' in record) return [record.title];
+  if ('name' in record) return[record.name];
+  return [];
+};
 
 const filterSearch = (records: (Artist | Album | Track)[], search: string) => {
   const query = search.toLowerCase();
@@ -67,6 +72,20 @@ const filterByIdentificationStatus = (
   });
 };
 
+const filterUnidentified = (
+  records: (Artist | Album | Track)[],
+  identified: boolean,
+  unidentified: boolean,
+) => {
+  if (identified === unidentified) return records;
+  const isUnknown = (value: string) => value.toLowerCase().includes('unknown');
+
+  return records.filter((record) => {
+    const hasUnknownField = getFilterField(record).some(isUnknown);
+    return identified ? !hasUnknownField : hasUnknownField;
+  });
+};
+
 const filterDuplicate = (records: (Artist | Album | Track)[], duplicate: boolean) => {
   if (!duplicate) return records;
   const counts = new Map<string, number>();
@@ -93,4 +112,5 @@ export {
   filterAlbum,
   filterByIdentificationStatus,
   filterDuplicate,
+  filterUnidentified
 };
