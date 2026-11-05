@@ -4,6 +4,7 @@
     <RouterLink to="/artists" class="link">Artists</RouterLink>
     <RouterLink to="/albums" class="link">Albums</RouterLink>
     <RouterLink to="/tracks" class="link">Tracks</RouterLink>
+    <RouterLink to="/data-quality" class="link">Data quality</RouterLink>
   </nav>
 </template>
 <style scoped>
