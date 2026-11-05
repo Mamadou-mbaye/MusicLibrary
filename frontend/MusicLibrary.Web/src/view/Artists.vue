@@ -12,7 +12,8 @@
       <DupCheckForm @handle-dupplicate="handleDupplicate" />
     </div>
 
-    <table>
+    <ArtistsTable :artists="artists" @handle-sort="handleSort" />
+    <!-- <table>
       <thead>
         <tr>
           <th></th>
@@ -35,7 +36,7 @@
           <td>{{ formatDate(artist.updatedAt) }}</td>
         </tr>
       </tbody>
-    </table>
+    </table> -->
   </div>
 </template>
 <style scoped>
@@ -43,24 +44,6 @@
   display: flex;
   gap: 1vw;
 }
-
-table {
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
-}
-
-td,
-th {
-  border: 1px solid #dddddd;
-  text-align: left;
-  padding: 8px;
-}
-
-th {
-  background-color: #da9f9f;
-}
-
 .filters {
   display: flex;
   gap: 1vw;
@@ -70,7 +53,6 @@ th {
 import { ref, onMounted, computed } from 'vue';
 import type { Artist } from '@/types/artist';
 import { useArtistsStore } from '@/stores/artists';
-import { formatDate } from '@/utils/date';
 import {
   filterSearch,
   filterDate,
@@ -82,6 +64,7 @@ import SearchForm from '@/components/SearchForm.vue';
 import DateForm from '@/components/DateForm.vue';
 import CheckForm from '@/components/CheckForm.vue';
 import DupCheckForm from '@/components/DupCheckForm.vue';
+import ArtistsTable from '@/components/layout/ArtistsTable.vue';
 
 const artistsStore = useArtistsStore();
 
@@ -91,14 +74,17 @@ const endDate = ref<string>('');
 const identified = ref<boolean>(false);
 const unidentified = ref<boolean>(false);
 const duplicate = ref<boolean>(false);
-const sortState = ref(createSortState<Artist>('name'));
-
+const sort = {
+  state: ref(createSortState<Artist>('name')),
+  field: "" as keyof Artist
+}
 const artists = computed(() => {
   let records = artistsStore.artists;
   records = filterByIdentificationStatus(records, identified.value, unidentified.value) as Artist[];
   records = filterSearch(records, search.value) as Artist[];
   records = filterDate(records, startDate.value, endDate.value) as Artist[];
   records = filterDuplicate(records, duplicate.value) as Artist[];
+  records = orderByField(  records, sort.field,   sort.state.value.direction);
   return records;
 });
 
@@ -110,10 +96,9 @@ const handleUnidentified = (checkInput: boolean) => (unidentified.value = checkI
 const handleDupplicate = (checkInput: boolean) => (duplicate.value = checkInput);
 const handleSync = async () => await artistsStore.ArtistsSync();
 const handleSort = (field: keyof Artist) => {
-  sortState.value = toggleSort(sortState.value, field);
-  artistsStore.artists = orderByField(artistsStore.artists, field, sortState.value.direction);
+  sort.state.value = toggleSort(sort.state.value, field);
+  sort.field = field
 };
-
 onMounted(async () => {
   await artistsStore.ArtistsLoad();
 });

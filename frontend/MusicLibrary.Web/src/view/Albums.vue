@@ -11,7 +11,8 @@
       <CheckForm @handle-identified="handleIdentified" @handle-unidentified="handleUnidentified" />
       <DupCheckForm @handle-dupplicate="handleDupplicate" />
     </div>
-    <table>
+    <AlbumsTable :albums="albums" @handle-sort="handleSort" />
+    <!-- <table>
       <thead>
         <tr>
           <th></th>
@@ -36,30 +37,13 @@
           <td>{{ formatDate(album.updatedAt) }}</td>
         </tr>
       </tbody>
-    </table>
+    </table> -->
   </div>
 </template>
 <style scoped>
 #div-container {
   display: flex;
   gap: 1vw;
-}
-
-table {
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
-}
-
-td,
-th {
-  border: 1px solid #dddddd;
-  text-align: left;
-  padding: 8px;
-}
-
-th {
-  background-color: #da9f9f;
 }
 .filters {
   display: flex;
@@ -84,6 +68,7 @@ import SearchForm from '@/components/SearchForm.vue';
 import DateForm from '@/components/DateForm.vue';
 import CheckForm from '@/components/CheckForm.vue';
 import DupCheckForm from '@/components/DupCheckForm.vue';
+import AlbumsTable from '@/components/layout/AlbumsTable.vue';
 
 const albumsStore = useAlbumsStore();
 
@@ -93,16 +78,18 @@ const endDate = ref<string>('');
 const identified = ref<boolean>(false);
 const unidentified = ref<boolean>(false);
 const duplicate = ref<boolean>(false);
-const sortState = ref(createSortState<Album>('name'));
-
+const sort = {
+  state: ref(createSortState<Album>('name')),
+  field: "" as keyof Album
+}
 const albums = computed(() => {
   let records = albumsStore.albums;
-
   records = filterByIdentificationStatus(records, identified.value, unidentified.value) as Album[];
   records = filterArtist(records, artistId.value) as Album[];
   records = filterSearch(records, search.value) as Album[];
   records = filterDate(records, startDate.value, endDate.value) as Album[];
   records = filterDuplicate(records, duplicate.value) as Album[];
+  records = orderByField(records, sort.field, sort.state.value.direction);
   return records;
 });
 
@@ -120,10 +107,9 @@ const handleUnidentified = (checkInput: boolean) => (unidentified.value = checkI
 const handleDupplicate = (checkInput: boolean) => (duplicate.value = checkInput);
 const handleSync = async () => await albumsStore.AlbumsSync();
 const handleSort = (field: keyof Album) => {
-  sortState.value = toggleSort(sortState.value, field);
-  albumsStore.albums = orderByField(albumsStore.albums, field, sortState.value.direction);
+  sort.state.value = toggleSort(sort.state.value, field);
+  sort.field = field
 };
-
 onMounted(async () => {
   await albumsStore.AlbumsLoad();
 });

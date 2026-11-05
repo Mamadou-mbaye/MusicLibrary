@@ -11,39 +11,7 @@
       <CheckForm @handle-identified="handleIdentified" @handle-unidentified="handleUnidentified" />
       <DupCheckForm @handle-dupplicate="handleDupplicate" />
     </div>
-    <table>
-      <thead>
-        <tr>
-          <th>id</th>
-          <th>navidromeId</th>
-          <th>albumId</th>
-          <th @click="handleSort('album')">album</th>
-          <th>artistId</th>
-          <th @click="handleSort('artist')">artist</th>
-          <th @click="handleSort('title')">title</th>
-
-          <th>durationSeconds</th>
-          <th>path</th>
-          <th>createdAt</th>
-          <th>updatedAt</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="track in tracks" :key="track.id">
-          <td>{{ track.id }}</td>
-          <td>{{ track.navidromeId }}</td>
-          <td>{{ track.albumId }}</td>
-          <td>{{ track.album }}</td>
-          <td>{{ track.artistId }}</td>
-          <td>{{ track.artist }}</td>
-          <td>{{ track.title }}</td>
-          <td>{{ track.durationSeconds }}</td>
-          <td>{{ track.path }}</td>
-          <td>{{ formatDate(track.createdAt) }}</td>
-          <td>{{ formatDate(track.updatedAt) }}</td>
-        </tr>
-      </tbody>
-    </table>
+    <TracksTable :tracks="tracks" @handle-sort="handleSort"/>
   </div>
 </template>
 <style scoped>
@@ -51,24 +19,6 @@
   display: flex;
   gap: 1vw;
 }
-
-table {
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
-}
-
-td,
-th {
-  border: 1px solid #dddddd;
-  text-align: left;
-  padding: 8px;
-}
-
-th {
-  background-color: #da9f9f;
-}
-
 .filters {
   display: flex;
   gap: 1vw;
@@ -79,7 +29,6 @@ import { ref, onMounted, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import type { Track } from '@/types/track';
 import { useTracksStore } from '@/stores/tracks';
-import { formatDate } from '@/utils/date';
 import {
   filterSearch,
   filterDate,
@@ -93,6 +42,7 @@ import SearchForm from '@/components/SearchForm.vue';
 import DateForm from '@/components/DateForm.vue';
 import CheckForm from '@/components/CheckForm.vue';
 import DupCheckForm from '@/components/DupCheckForm.vue';
+import TracksTable from '@/components/layout/TracksTable.vue';
 
 const tracksStore = useTracksStore();
 
@@ -102,17 +52,19 @@ const endDate = ref<string>('');
 const identified = ref<boolean>(false);
 const unidentified = ref<boolean>(false);
 const duplicate = ref<boolean>(false);
-const sortState = ref(createSortState<Track>('title'));
-
+const sort = {
+  state: ref(createSortState<Track>('title')),
+  field: "" as keyof Track
+}
 const tracks = computed(() => {
   let records = tracksStore.tracks;
-
   records = filterByIdentificationStatus(records, identified.value, unidentified.value) as Track[];
   records = filterArtist(records, artistId.value) as Track[];
   records = filterAlbum(records, albumId.value) as Track[];
   records = filterSearch(records, search.value) as Track[];
   records = filterDate(records, startDate.value, endDate.value) as Track[];
   records = filterDuplicate(records, duplicate.value) as Track[];
+  records = orderByField(records, sort.field, sort.state.value.direction);
   return records;
 });
 
@@ -134,8 +86,8 @@ const handleUnidentified = (checkInput: boolean) => (unidentified.value = checkI
 const handleDupplicate = (checkInput: boolean) => (duplicate.value = checkInput);
 const handleSync = async () => await tracksStore.TracksSync();
 const handleSort = (field: keyof Track) => {
-  sortState.value = toggleSort(sortState.value, field);
-  tracksStore.tracks = orderByField(tracksStore.tracks, field, sortState.value.direction);
+  sort.state.value = toggleSort(sort.state.value, field);
+  sort.field =  field;
 };
 
 onMounted(async () => {
