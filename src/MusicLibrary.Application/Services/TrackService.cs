@@ -1,6 +1,7 @@
 using System.Text.Json;
 using MusicLibrary.Application.Persistence;
 using MusicLibrary.Application.Models;
+using System.Diagnostics.CodeAnalysis;
 
 namespace MusicLibrary.Application.Services;
 
@@ -24,6 +25,7 @@ public class TrackService : ITrackService
     => await _trackRepository.GetTracksAsync(ct);
     public async Task<int> SyncTracksAsync(CancellationToken ct = default)
     {
+        await _albumService.SyncAlbumsAsync(ct);
         int songOffset = 0;
         int songCount = 500;
         var imported = 0;

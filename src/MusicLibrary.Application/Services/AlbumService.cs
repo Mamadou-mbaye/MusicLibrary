@@ -27,6 +27,7 @@ public class AlbumService : IAlbumService
 
     public async Task<int> SyncAlbumsAsync(CancellationToken ct = default)
     {
+        await _artistService.SyncArtistsAsync(ct);
         int songOffset = 0;
         int songCount = 500;
         var imported = 0;
