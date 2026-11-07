@@ -3,4 +3,7 @@
     <Project Path="src/MusicLibrary.Api/MusicLibrary.Api.csproj" />
     <Project Path="src/MusicLibrary.Application/MusicLibrary.Application.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/MusicLibrary.Tests/MusicLibrary.Tests.csproj" />
+  </Folder>
 </Solution>
