@@ -75,6 +75,7 @@ This project is licensed under the [MIT License](LICENSE).
 - [x] Search by title, artist, album and genre
 - [x] Detect tracks with missing metadata
 - [x] Detect possible duplicates
+- [x] Sort by title, artist, album and genre
 
 ### Later
 
