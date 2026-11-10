@@ -1,29 +1,27 @@
 <template>
-  <div>
-    <h1>Tracks component</h1>
-    <div>
+  <div class="container">
+    <h1>Tracks</h1>
+    <div class="sync_records">
       <div>Tracks count: {{ tracks.length }}</div>
-      <button @click="handleSync">Sync tracks</button>
+      <button @click="handleSync" class="button">Sync tracks</button>
     </div>
     <div class="filters">
       <SearchForm @search="handleSearch" />
       <DateForm @start-date-change="handleStartDateChange" @end-date-change="handleEndDateChange" />
-      <CheckForm @handle-identified="handleIdentified" @handle-unidentified="handleUnidentified" />
-      <DupCheckForm @handle-dupplicate="handleDupplicate" />
+      <div class="filter-checks">
+        <CheckForm
+          @handle-identified="handleIdentified"
+          @handle-unidentified="handleUnidentified"
+        />
+        <DupCheckForm @handle-duplicate="handleDupplicate" />
+      </div>
     </div>
-    <TracksTable :tracks="tracks" @handle-sort="handleSort"/>
+    <div class="table-wrap">
+      <TracksTable :tracks="tracks" @handle-sort="handleSort" />
+    </div>
   </div>
 </template>
-<style scoped>
-#div-container {
-  display: flex;
-  gap: 1vw;
-}
-.filters {
-  display: flex;
-  gap: 1vw;
-}
-</style>
+<style scoped></style>
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
 import { useRoute } from 'vue-router';
@@ -54,8 +52,8 @@ const unidentified = ref<boolean>(false);
 const duplicate = ref<boolean>(false);
 const sort = {
   state: ref(createSortState<Track>('title')),
-  field: "" as keyof Track
-}
+  field: '' as keyof Track,
+};
 const tracks = computed(() => {
   let records = tracksStore.tracks;
   records = filterByIdentificationStatus(records, identified.value, unidentified.value) as Track[];
@@ -87,7 +85,7 @@ const handleDupplicate = (checkInput: boolean) => (duplicate.value = checkInput)
 const handleSync = async () => await tracksStore.TracksSync();
 const handleSort = (field: keyof Track) => {
   sort.state.value = toggleSort(sort.state.value, field);
-  sort.field =  field;
+  sort.field = field;
 };
 
 onMounted(async () => {

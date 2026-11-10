@@ -1,66 +1,130 @@
 <template>
-    <div>
-        <!-- Metadati mancanti. -->
+  <div class="container data-quality">
+    <!-- Metadati mancanti. -->
+    <fieldset>
+      <legend>Missing Metadata</legend>
+    </fieldset>
+    <!-- Possibili duplicati. -->
+    <fieldset>
+      <legend>Potential Duplicates</legend>
+      <details>
+        <summary>Duplicate Artists</summary>
         <fieldset>
-            <legend>Missing Metadata</legend>
+          <ArtistsTable
+            :artists="duplicatedArtists"
+            v-if="duplicatedArtists.length > 0"
+            :showActionsCol="false"
+          />
+          <div v-else>No duplicate artists found.</div>
         </fieldset>
-        <!-- Possibili duplicati. -->
+      </details>
+      <details>
+        <summary>Duplicate Albums</summary>
         <fieldset>
-            <legend>Potential Duplicates</legend>
-            <details>
-                <summary>Duplicate Artists</summary>
-                <fieldset>
-                    <ArtistsTable :artists="duplicatedArtists" v-if="duplicatedArtists.length > 0" />
-                    <div v-else>No duplicate artists found.</div>
-                </fieldset>
-            </details>
-            <details>
-                <summary>Duplicate Albums</summary>
-                <fieldset>
-                    <AlbumsTable :albums="duplicatedAlbums" v-if="duplicatedAlbums.length > 0" />
-                    <div v-else>No duplicate albums found.</div>
-                </fieldset>
-            </details>
-            <details>
-                <summary>Duplicate Tracks</summary>
-                <fieldset>
-                    <TracksTable :tracks="duplicatedTracks" v-if="duplicatedTracks.length > 0" />
-                    <div v-else>No duplicate tracks found.</div>
-                </fieldset>
-            </details>
+          <AlbumsTable
+            :albums="duplicatedAlbums"
+            v-if="duplicatedAlbums.length > 0"
+            :showActionsCol="false"
+          />
+          <div v-else>No duplicate albums found.</div>
         </fieldset>
+      </details>
+      <details>
+        <summary>Duplicate Tracks</summary>
         <fieldset>
-            <legend>Unidentified</legend>
-            <!-- Artisti sconosciuti. -->
-            <details>
-                <summary>Unidentified Artists</summary>
-                <fieldset>
-                    <ArtistsTable :artists="UnidentifiedArtists" v-if="UnidentifiedArtists.length > 0" />
-                    <div v-else>All artists have a recognized name.</div>
-                </fieldset>
-            </details>
-            <!-- Album sconosciuti. -->
-            <details>
-                <summary>Unidentified Albums</summary>
-                <fieldset>
-                    <AlbumsTable :albums="UnidentifiedAlbums" v-if="UnidentifiedAlbums.length > 0" />
-                    <div v-else>All albums have a recognized name.</div>
-                </fieldset>
-            </details>
-            <!-- Tracce senza titolo. -->
-            <details>
-                <summary>Unidentified Tracks</summary>
-                <fieldset>
-                    <TracksTable :tracks="UnidentifiedTracks" v-if="UnidentifiedTracks.length > 0" />
-                    <div v-else>All tracks have a recognized title.</div>
-                </fieldset>
-            </details>
+          <TracksTable :tracks="duplicatedTracks" v-if="duplicatedTracks.length > 0" />
+          <div v-else>No duplicate tracks found.</div>
         </fieldset>
-    </div>
+      </details>
+    </fieldset>
+    <fieldset>
+      <legend>Unidentified</legend>
+      <!-- Artisti sconosciuti. -->
+      <details>
+        <summary>Unidentified Artists</summary>
+        <fieldset>
+          <ArtistsTable
+            :artists="UnidentifiedArtists"
+            v-if="UnidentifiedArtists.length > 0"
+            :showActionsCol="false"
+          />
+          <div v-else>All artists have a recognized name.</div>
+        </fieldset>
+      </details>
+      <!-- Album sconosciuti. -->
+      <details>
+        <summary>Unidentified Albums</summary>
+        <fieldset>
+          <AlbumsTable
+            :albums="UnidentifiedAlbums"
+            v-if="UnidentifiedAlbums.length > 0"
+            :showActionsCol="false"
+          />
+          <div v-else>All albums have a recognized name.</div>
+        </fieldset>
+      </details>
+      <!-- Tracce senza titolo. -->
+      <details>
+        <summary>Unidentified Tracks</summary>
+        <fieldset>
+          <TracksTable :tracks="UnidentifiedTracks" v-if="UnidentifiedTracks.length > 0" />
+          <div v-else>All tracks have a recognized title.</div>
+        </fieldset>
+      </details>
+    </fieldset>
+  </div>
 </template>
+
 <style scoped>
-summary{
-    cursor: pointer;
+.data-quality {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  /* spazio tra i blocchi principali */
+  padding: 1rem;
+}
+
+fieldset {
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 0.75rem 1rem 1rem;
+  /* il reset globale ha azzerato il padding, lo rimettiamo noi */
+  min-width: 0;
+  /* vedi sotto */
+}
+
+legend {
+  padding: 0 0.5rem;
+  font-weight: 500;
+}
+
+details {
+  margin-top: 0.5rem;
+}
+
+summary {
+  padding: 0.4rem 0.5rem;
+  border-radius: 4px;
+  user-select: none;
+  /* doppio clic non seleziona il testo */
+}
+
+summary:hover {
+  background-color: var(--color-hover);
+}
+
+details[open] > summary {
+  font-weight: 500;
+  color: var(--color-accent);
+  /* si capisce quale sezione è aperta */
+}
+
+/* il fieldset dentro un details serve solo da contenitore: niente bordo */
+details > fieldset {
+  border: none;
+  padding: 0.5rem 0 0;
+  overflow-x: auto;
+  /* se la tabella è larga, scorre dentro il blocco */
 }
 </style>
 <script setup lang="ts">
@@ -74,30 +138,33 @@ import { useArtistsStore } from '@/stores/artists';
 import { useAlbumsStore } from '@/stores/albums';
 import { useTracksStore } from '@/stores/tracks';
 
-import {
-    filterUnidentified,
-    filterDuplicate,
-} from '@/utils/filters';
+import { filterUnidentified, filterDuplicate } from '@/utils/filters';
 
 import ArtistsTable from '@/components/layout/ArtistsTable.vue';
 import AlbumsTable from '@/components/layout/AlbumsTable.vue';
 import TracksTable from '@/components/layout/TracksTable.vue';
 
 const artistsStore = useArtistsStore();
-const UnidentifiedArtists = computed(() => filterUnidentified(artistsStore.artists, false, true) as Artist[])
-const duplicatedArtists = computed(() => filterDuplicate(artistsStore.artists, true) as Artist[])
+const UnidentifiedArtists = computed(
+  () => filterUnidentified(artistsStore.artists, false, true) as Artist[],
+);
+const duplicatedArtists = computed(() => filterDuplicate(artistsStore.artists, true) as Artist[]);
 
 const albumsStore = useAlbumsStore();
-const UnidentifiedAlbums = computed(() => filterUnidentified(albumsStore.albums, false, true) as Album[]);
-const duplicatedAlbums = computed(() => filterDuplicate(albumsStore.albums, true) as Album[])
+const UnidentifiedAlbums = computed(
+  () => filterUnidentified(albumsStore.albums, false, true) as Album[],
+);
+const duplicatedAlbums = computed(() => filterDuplicate(albumsStore.albums, true) as Album[]);
 
 const tracksStore = useTracksStore();
-const UnidentifiedTracks = computed(() => filterUnidentified(tracksStore.tracks, false, true) as Track[]);
-const duplicatedTracks = computed(() => filterDuplicate(tracksStore.tracks, true) as Track[])
+const UnidentifiedTracks = computed(
+  () => filterUnidentified(tracksStore.tracks, false, true) as Track[],
+);
+const duplicatedTracks = computed(() => filterDuplicate(tracksStore.tracks, true) as Track[]);
 
 onMounted(async () => {
-    await artistsStore.ArtistsLoad();
-    await albumsStore.AlbumsLoad();
-    await tracksStore.TracksLoad();
-})
+  await artistsStore.ArtistsLoad();
+  await albumsStore.AlbumsLoad();
+  await tracksStore.TracksLoad();
+});
 </script>

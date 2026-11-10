@@ -1,8 +1,10 @@
 <template>
-  <div>
-    <label for="date">Date</label>
-    <input type="date" name="" id="date" @change="startDateChange" />
-    <input type="date" name="" id="date" @change="endDateChange" />
+  <div class="filter-group">
+    <label for="date-start">Date</label>
+    <div class="filter-row">
+      <input id=" date-start" type="date" aria-label="Start date" @change="startDateChange" />
+      <input id="date-end" type="date" aria-label="End date" @change="endDateChange" />
+    </div>
   </div>
 </template>
 <script setup lang="ts">

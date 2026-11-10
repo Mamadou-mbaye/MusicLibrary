@@ -1,43 +1,24 @@
 <template>
-  <div>
-    <h1>Albums component</h1>
-    <div>
+  <div class="container">
+    <h1>Albums</h1>
+    <div class="sync_records">
       <div>Albums count: {{ albums.length }}</div>
-      <button @click="handleSync">Sync albums</button>
+      <button @click="handleSync" class="button">Sync albums</button>
     </div>
     <div class="filters">
       <SearchForm @search="handleSearch" />
       <DateForm @start-date-change="handleStartDateChange" @end-date-change="handleEndDateChange" />
-      <CheckForm @handle-identified="handleIdentified" @handle-unidentified="handleUnidentified" />
-      <DupCheckForm @handle-dupplicate="handleDupplicate" />
+      <div class="filter-checks">
+        <CheckForm
+          @handle-identified="handleIdentified"
+          @handle-unidentified="handleUnidentified"
+        />
+        <DupCheckForm @handle-duplicate="handleDupplicate" />
+      </div>
     </div>
-    <AlbumsTable :albums="albums" @handle-sort="handleSort" />
-    <!-- <table>
-      <thead>
-        <tr>
-          <th></th>
-          <th>id</th>
-          <th>navidromeId</th>
-          <th>artistId</th>
-          <th @click="handleSort('artist')">artist</th>
-          <th @click="handleSort('name')">name</th>
-          <th @click="handleSort('createdAt')">createdAt</th>
-          <th @click="handleSort('updatedAt')">updatedAt</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="album in albums" :key="album.id">
-          <td><a :href="`/albums/${album.id}/tracks`">tracks</a></td>
-          <td>{{ album.id }}</td>
-          <td>{{ album.navidromeId }}</td>
-          <td>{{ album.artistId }}</td>
-          <td>{{ album.artist }}</td>
-          <td>{{ album.name }}</td>
-          <td>{{ formatDate(album.createdAt) }}</td>
-          <td>{{ formatDate(album.updatedAt) }}</td>
-        </tr>
-      </tbody>
-    </table> -->
+    <div class="table-wrap">
+      <AlbumsTable :albums="albums" @handle-sort="handleSort" :showActionsCol="true" />
+    </div>
   </div>
 </template>
 <style scoped>
@@ -45,6 +26,7 @@
   display: flex;
   gap: 1vw;
 }
+
 .filters {
   display: flex;
   gap: 1vw;
@@ -55,7 +37,6 @@ import { ref, onMounted, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import type { Album } from '@/types/album';
 import { useAlbumsStore } from '@/stores/albums';
-import { formatDate } from '@/utils/date';
 import {
   filterSearch,
   filterDate,
@@ -80,8 +61,8 @@ const unidentified = ref<boolean>(false);
 const duplicate = ref<boolean>(false);
 const sort = {
   state: ref(createSortState<Album>('name')),
-  field: "" as keyof Album
-}
+  field: '' as keyof Album,
+};
 const albums = computed(() => {
   let records = albumsStore.albums;
   records = filterByIdentificationStatus(records, identified.value, unidentified.value) as Album[];
@@ -108,7 +89,7 @@ const handleDupplicate = (checkInput: boolean) => (duplicate.value = checkInput)
 const handleSync = async () => await albumsStore.AlbumsSync();
 const handleSort = (field: keyof Album) => {
   sort.state.value = toggleSort(sort.state.value, field);
-  sort.field = field
+  sort.field = field;
 };
 onMounted(async () => {
   await albumsStore.AlbumsLoad();

@@ -1,12 +1,13 @@
 <template>
-  <div id="app">
+  <div id="app" class="app">
     <Sidebar />
     <RouterView />
   </div>
 </template>
 <style scoped>
-#app {
+.app {
   display: flex;
+  height: 100svh;
 }
 </style>
 <script setup lang="ts">

@@ -1,0 +1,31 @@
+.sidebar {
+  flex: 0 0 var(--sidebar_width);
+  height: auto; /* si estende da solo a tutta l'altezza dell'app */
+  box-sizing: border-box;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  overflow-y: auto;
+  background-color: var(--color-sidebar);
+  /* tolti: position: sticky, top, left, align-self, z-index: non servono più */
+}
+.link {
+  /* al posto di ".sidebar a": hai già la classe */
+  display: block;
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+}
+.link:hover {
+  background-color: var(--color-hover);
+}
+.link.router-link-active:not([href='/']),
+.link[href='/'].router-link-exact-active {
+  font-weight: bold;
+  color: var(--color-accent);
+  background-color: var(--color-hover);
+}
+.btn-theme {
+  margin-top: auto; /* spinge il bottone in fondo alla sidebar */
+  padding: 0.5rem;
+}

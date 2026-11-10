@@ -15,7 +15,7 @@ const getFilterFields = (record: Artist | Album | Track): string[] => {
 };
 const getFilterField = (record: Artist | Album | Track): string[] => {
   if ('title' in record) return [record.title];
-  if ('name' in record) return[record.name];
+  if ('name' in record) return [record.name];
   return [];
 };
 
@@ -112,5 +112,5 @@ export {
   filterAlbum,
   filterByIdentificationStatus,
   filterDuplicate,
-  filterUnidentified
+  filterUnidentified,
 };

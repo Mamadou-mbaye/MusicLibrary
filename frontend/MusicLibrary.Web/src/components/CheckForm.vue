@@ -1,10 +1,7 @@
 <template>
-  <div>
-    <label for="known">Identified</label>
-    <input type="checkbox" @input="handleIdentified" id="known" />
-
-    <label for="unknow">Unidentified</label>
-    <input type="checkbox" @input="handleUnidentified" id="unknow" />
+  <div class="filter-checks">
+    <label><input type="checkbox" @input="handleIdentified" /> Identified</label>
+    <label><input type="checkbox" @input="handleUnidentified" /> Unidentified</label>
   </div>
 </template>
 <script setup lang="ts">

@@ -1,54 +1,27 @@
 <template>
-  <div>
-    <h1>Artists component</h1>
-    <div>
+  <div class="container">
+    <h1>Artists</h1>
+    <div class="sync_records">
       <div>Artists count: {{ artists.length }}</div>
-      <button @click="handleSync">Sync artists</button>
+      <button @click="handleSync" class="button">Sync artists</button>
     </div>
     <div class="filters">
       <SearchForm @search="handleSearch" />
       <DateForm @start-date-change="handleStartDateChange" @end-date-change="handleEndDateChange" />
-      <CheckForm @handle-identified="handleIdentified" @handle-unidentified="handleUnidentified" />
-      <DupCheckForm @handle-dupplicate="handleDupplicate" />
+      <div class="filter-checks">
+        <CheckForm
+          @handle-identified="handleIdentified"
+          @handle-unidentified="handleUnidentified"
+        />
+        <DupCheckForm @handle-duplicate="handleDupplicate" />
+      </div>
     </div>
-
-    <ArtistsTable :artists="artists" @handle-sort="handleSort" />
-    <!-- <table>
-      <thead>
-        <tr>
-          <th></th>
-          <th></th>
-          <th>id</th>
-          <th>navidromeId</th>
-          <th @click="handleSort('name')">name</th>
-          <th @click="handleSort('createdAt')">createdAt</th>
-          <th @click="handleSort('updatedAt')">updatedAt</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="artist in artists" :key="artist.id">
-          <td><a :href="`/artists/${artist.id}/albums`">albums</a></td>
-          <td><a :href="`/artists/${artist.id}/tracks`">tracks</a></td>
-          <td>{{ artist.id }}</td>
-          <td>{{ artist.navidromeId }}</td>
-          <td>{{ artist.name }}</td>
-          <td>{{ formatDate(artist.createdAt) }}</td>
-          <td>{{ formatDate(artist.updatedAt) }}</td>
-        </tr>
-      </tbody>
-    </table> -->
+    <div class="table-wrap">
+      <ArtistsTable :artists="artists" @handle-sort="handleSort" :showActionsCol="true" />
+    </div>
   </div>
 </template>
-<style scoped>
-#div-container {
-  display: flex;
-  gap: 1vw;
-}
-.filters {
-  display: flex;
-  gap: 1vw;
-}
-</style>
+<style scoped></style>
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
 import type { Artist } from '@/types/artist';
@@ -76,15 +49,15 @@ const unidentified = ref<boolean>(false);
 const duplicate = ref<boolean>(false);
 const sort = {
   state: ref(createSortState<Artist>('name')),
-  field: "" as keyof Artist
-}
+  field: '' as keyof Artist,
+};
 const artists = computed(() => {
   let records = artistsStore.artists;
   records = filterByIdentificationStatus(records, identified.value, unidentified.value) as Artist[];
   records = filterSearch(records, search.value) as Artist[];
   records = filterDate(records, startDate.value, endDate.value) as Artist[];
   records = filterDuplicate(records, duplicate.value) as Artist[];
-  records = orderByField(  records, sort.field,   sort.state.value.direction);
+  records = orderByField(records, sort.field, sort.state.value.direction);
   return records;
 });
 
@@ -97,7 +70,7 @@ const handleDupplicate = (checkInput: boolean) => (duplicate.value = checkInput)
 const handleSync = async () => await artistsStore.ArtistsSync();
 const handleSort = (field: keyof Artist) => {
   sort.state.value = toggleSort(sort.state.value, field);
-  sort.field = field
+  sort.field = field;
 };
 onMounted(async () => {
   await artistsStore.ArtistsLoad();

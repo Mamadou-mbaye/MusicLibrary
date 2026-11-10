@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <label for="search">Search</label>
+  <div class="filter-group">
+    <label for="search" class="text-lg">Search</label>
     <input type="text" @input="search" id="search" />
   </div>
 </template>

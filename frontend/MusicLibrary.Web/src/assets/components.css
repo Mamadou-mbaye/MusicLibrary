@@ -1,0 +1,66 @@
+.container {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column; /* titolo, barre e tabella in colonna */
+  overflow: auto; /* serve a DataQuality, che non ha table-wrap */
+  background-color: var(--color-bg);
+}
+.sync_records {
+  flex-shrink: 0; /* le barre non si schiacciano mai */
+  height: var(--sync_records_height);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0 8px;
+  background-color: var(--color-sync);
+}
+
+.filters {
+  flex-shrink: 0;
+  min-height: 50px; /* torna min-height: ora può crescere se va a capo */
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  padding: 4px 8px;
+  background-color: var(--color-filters);
+}
+.table-wrap {
+  flex: 1; /* prende tutto lo spazio rimasto */
+  min-height: 0; /* senza questo non si restringe e non scorre */
+  overflow: auto; /* scorre solo la tabella, in entrambe le direzioni */
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-accent) transparent;
+}
+.grid-header {
+  position: sticky;
+  top: 0; /* si aggancia in cima al table-wrap */
+  background-color: var(--color-grid-header);
+}
+
+/* un gruppo di filtro: label sopra, campo sotto */
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* campi affiancati (es. le due date) */
+.filter-row {
+  display: flex;
+  gap: 0.5rem;
+}
+/* checkbox in riga */
+.filter-checks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+}
+.button {
+  width: var(--button_width);
+}
+.actions {
+  display: flex;
+  gap: 1vw;
+}
