@@ -23,6 +23,7 @@ builder.Services.AddScoped<ITrackRepository, TrackRepository>();
 builder.Services.AddScoped<IArtistService, ArtistService>();
 builder.Services.AddScoped<IAlbumService, AlbumService>();
 builder.Services.AddScoped<ITrackService, TrackService>();
+builder.Services.AddScoped<ITagReaderService,TagReaderService>();
 
 builder.Services.AddCors(options =>
 {
