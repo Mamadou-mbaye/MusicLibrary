@@ -1,6 +1,5 @@
 :root {
   --sync_records_height: 30px;
-  --button_width: 100px;
   --sidebar_width: 150px;
 
   --color-text: #222222;
@@ -41,9 +40,35 @@ a {
   color: var(--color-text); /* al posto di "black" */
   cursor: pointer;
 }
+label {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
 button,
 input[type='checkbox'] {
   cursor: pointer;
+}
+input {
+  border: none;
+  border-radius: 4px;
+  padding: 0.2rem 0.35rem;
+  font: inherit;
+  font-weight: 400;
+}
+input:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
+}
+button {
+  padding: 0.5rem 1.5rem;
+  outline: none;
+  border: 1px solid var(--color-accent);
+  border-radius: 4px;
+  background-color: var(--color-accent);
+  color: var(--color-bg);
+}
+button:hover {
+  filter: brightness(1.1);
 }
 table {
   font-family: arial, sans-serif;

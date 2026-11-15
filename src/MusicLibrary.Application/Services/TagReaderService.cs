@@ -12,7 +12,8 @@ public class TagReaderService : ITagReaderService
             TrackNumber = (int?)file.Tag.Track,
             DiscNumber = (int?)file.Tag.Disc,
             Genre = file.Tag.FirstGenre,
-            Year = (int?)file.Tag.Year
+            Year = (int?)file.Tag.Year,
+            FileName = Path.GetFileName( file.Name)
         };
 
         return  Task.FromResult<TrackTags?>(tags);

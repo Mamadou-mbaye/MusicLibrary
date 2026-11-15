@@ -11,3 +11,15 @@ export interface Track {
   createdAt: string;
   updatedAt: string;
 }
+export interface TrackTags {
+  title: string;
+  artist: string;
+  artistId: number;
+  album: string;
+  albumId: number;
+  trackNumber: number;
+  discNumber: number;
+  genre: string;
+  year: number;
+  fileName: string;
+}

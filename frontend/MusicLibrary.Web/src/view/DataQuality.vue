@@ -1,5 +1,8 @@
 <template>
   <div class="container data-quality">
+    <header class="page-header">
+      <h1>Data quality</h1>
+    </header>
     <!-- Metadati mancanti. -->
     <fieldset>
       <legend>Missing Metadata</legend>
@@ -32,7 +35,11 @@
       <details>
         <summary>Duplicate Tracks</summary>
         <fieldset>
-          <TracksTable :tracks="duplicatedTracks" v-if="duplicatedTracks.length > 0" />
+          <TracksTable
+            :tracks="duplicatedTracks"
+            v-if="duplicatedTracks.length > 0"
+            :showActionsCol="false"
+          />
           <div v-else>No duplicate tracks found.</div>
         </fieldset>
       </details>
@@ -67,7 +74,11 @@
       <details>
         <summary>Unidentified Tracks</summary>
         <fieldset>
-          <TracksTable :tracks="UnidentifiedTracks" v-if="UnidentifiedTracks.length > 0" />
+          <TracksTable
+            :tracks="UnidentifiedTracks"
+            v-if="UnidentifiedTracks.length > 0"
+            :showActionsCol="false"
+          />
           <div v-else>All tracks have a recognized title.</div>
         </fieldset>
       </details>

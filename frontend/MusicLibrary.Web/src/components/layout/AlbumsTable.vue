@@ -14,8 +14,10 @@
     </thead>
     <tbody>
       <tr v-for="album in albums" :key="album.id">
-        <td class="actions" v-if="showActionsCol">
-          <a :href="`/albums/${album.id}/tracks`">tracks</a>
+        <td v-if="showActionsCol">
+          <div class="actions">
+            <RouterLink :to="`/albums/${album.id}/tracks`">tracks</RouterLink>
+          </div>
         </td>
         <td>{{ album.id }}</td>
         <td>{{ album.navidromeId }}</td>

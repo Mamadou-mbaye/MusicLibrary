@@ -5,21 +5,30 @@ import type { Album } from '@/types/album';
 
 export const useAlbumsStore = defineStore('albums', () => {
   const albums = ref<Album[]>([]);
+  const isLoading = ref(true);
+
   const AlbumsLoad = async () => {
     try {
+      isLoading.value = true;
       const { data } = await apiClient.get('/albums');
       albums.value = data.albums;
     } catch (error) {
       console.error(error);
+    } finally {
+      isLoading.value = false;
     }
   };
   const AlbumsSync = async () => {
     try {
+      isLoading.value = true;
+      albums.value = [];
       await apiClient.post('/albums/sync');
       await AlbumsLoad();
     } catch (error) {
       console.error(error);
+    } finally {
+      isLoading.value = false;
     }
   };
-  return { albums, AlbumsLoad, AlbumsSync };
+  return { albums, AlbumsLoad, AlbumsSync, isLoading };
 });

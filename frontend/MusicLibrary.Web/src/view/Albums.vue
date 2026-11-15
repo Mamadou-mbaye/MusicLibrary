@@ -1,9 +1,12 @@
 <template>
   <div class="container">
-    <h1>Albums</h1>
+    <header class="page-header">
+      <h1>Albums</h1>
+    </header>
+
     <div class="sync_records">
       <div>Albums count: {{ albums.length }}</div>
-      <button @click="handleSync" class="button">Sync albums</button>
+      <button @click="handleSync" class="btn-sync">Sync albums</button>
     </div>
     <div class="filters">
       <SearchForm @search="handleSearch" />
@@ -17,7 +20,18 @@
       </div>
     </div>
     <div class="table-wrap">
-      <AlbumsTable :albums="albums" @handle-sort="handleSort" :showActionsCol="true" />
+      <AlbumsTable
+        :albums="albums"
+        @handle-sort="handleSort"
+        :showActionsCol="true"
+        v-if="albums.length > 0"
+      />
+      <LoadingForm
+        v-else
+        :isLoading="albumsStore.isLoading"
+        recordName="albums"
+        :emptyRecordMessage="emptyRecordMessage"
+      />
     </div>
   </div>
 </template>
@@ -26,7 +40,6 @@
   display: flex;
   gap: 1vw;
 }
-
 .filters {
   display: flex;
   gap: 1vw;
@@ -50,6 +63,7 @@ import DateForm from '@/components/DateForm.vue';
 import CheckForm from '@/components/CheckForm.vue';
 import DupCheckForm from '@/components/DupCheckForm.vue';
 import AlbumsTable from '@/components/layout/AlbumsTable.vue';
+import LoadingForm from '@/components/LoadingForm.vue';
 
 const albumsStore = useAlbumsStore();
 
@@ -63,6 +77,7 @@ const sort = {
   state: ref(createSortState<Album>('name')),
   field: '' as keyof Album,
 };
+const emptyRecordMessage = 'No albums available. Sync your library.';
 const albums = computed(() => {
   let records = albumsStore.albums;
   records = filterByIdentificationStatus(records, identified.value, unidentified.value) as Album[];

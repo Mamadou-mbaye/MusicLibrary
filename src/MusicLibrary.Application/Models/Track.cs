@@ -15,6 +15,6 @@ public class Track
     public string Album { get; set; } = string.Empty; 
     public string Artist { get; set; } = string.Empty; 
     public long ArtistId { get; set; }
+    public JsonArray RawTags { get ; set;  } = new () ; 
     // public int TrackNumber { get ; set; } 
-    // public JsonArray RawTags { get ; set;  } = new () ; 
 }

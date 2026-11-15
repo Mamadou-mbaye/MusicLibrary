@@ -12,9 +12,11 @@
     </thead>
     <tbody>
       <tr v-for="artist in artists" :key="artist.id">
-        <td class="actions" v-if="showActionsCol">
-          <a :href="`/artists/${artist.id}/albums`">albums</a>
-          <a :href="`/artists/${artist.id}/tracks`">tracks</a>
+        <td v-if="showActionsCol">
+          <div class="actions">
+            <RouterLink :to="`/artists/${artist.id}/albums`">albums</RouterLink>
+            <RouterLink :to="`/artists/${artist.id}/tracks`">tracks</RouterLink>
+          </div>
         </td>
         <td>{{ artist.id }}</td>
         <td>{{ artist.navidromeId }}</td>

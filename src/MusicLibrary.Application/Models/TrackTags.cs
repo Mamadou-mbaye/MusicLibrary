@@ -10,4 +10,5 @@ public class TrackTags
     public int? DiscNumber { get ; set; } 
     public string Genre { get; set; } = string.Empty;
     public int? Year { get ; set; } 
+    public string FileName { get; set; } = string.Empty;
 }

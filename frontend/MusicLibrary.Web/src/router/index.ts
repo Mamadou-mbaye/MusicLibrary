@@ -3,6 +3,7 @@ import Artists from '@/view/Artists.vue';
 import Albums from '@/view/Albums.vue';
 import Tracks from '@/view/Tracks.vue';
 import DataQuality from '@/view/DataQuality.vue';
+import TracksTags from '@/view/TracksTags.vue';
 
 const router = createRouter({
   history: createWebHistory(),
@@ -46,6 +47,12 @@ const router = createRouter({
       path: '/data-quality',
       name: 'dataQuality',
       component: DataQuality,
+    },
+
+    {
+      path: '/tracks/:id/tags/',
+      name: 'tracksTags',
+      component: TracksTags,
     },
   ],
 });

@@ -2,6 +2,7 @@
   <table>
     <thead class="grid-header">
       <tr>
+        <th v-if="showActionsCol"></th>
         <th>ID</th>
         <th>Navidrome ID</th>
         <th>Album ID</th>
@@ -17,6 +18,11 @@
     </thead>
     <tbody>
       <tr v-for="track in tracks" :key="track.id">
+        <td v-if="showActionsCol">
+          <div class="actions">
+            <RouterLink :to="`/tracks/${track.id}/tags/`">tags</RouterLink>
+          </div>
+        </td>
         <td>{{ track.id }}</td>
         <td>{{ track.navidromeId }}</td>
         <td>{{ track.albumId }}</td>
@@ -39,6 +45,7 @@ import { formatDate } from '@/utils/date';
 
 const props = defineProps<{
   tracks: Track[];
+  showActionsCol: boolean;
 }>();
 const emit = defineEmits(['handle-sort']);
 const handleSort = (field: keyof Track) => emit('handle-sort', field);

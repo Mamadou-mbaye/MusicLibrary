@@ -27,7 +27,7 @@ public static class Api
 		}
 		{
 			//Tags endpoints
-			app.MapGet("/api/readTags/{filename}", TrackTagsApi.ReadTags).WithName("ReadTags");
+			app.MapGet("/api/tracks/readTags/{filename}", TrackTagsApi.ReadTags).WithName("ReadTags");
 		}
 	}
 	public static async Task<IResult> Test()

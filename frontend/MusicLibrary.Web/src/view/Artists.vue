@@ -1,9 +1,11 @@
 <template>
   <div class="container">
-    <h1>Artists</h1>
+    <header class="page-header">
+      <h1>Artists</h1>
+    </header>
     <div class="sync_records">
       <div>Artists count: {{ artists.length }}</div>
-      <button @click="handleSync" class="button">Sync artists</button>
+      <button @click="handleSync" class="btn-sync">Sync artists</button>
     </div>
     <div class="filters">
       <SearchForm @search="handleSearch" />
@@ -17,7 +19,18 @@
       </div>
     </div>
     <div class="table-wrap">
-      <ArtistsTable :artists="artists" @handle-sort="handleSort" :showActionsCol="true" />
+      <ArtistsTable
+        :artists="artists"
+        @handle-sort="handleSort"
+        :showActionsCol="true"
+        v-if="artists.length > 0"
+      />
+      <LoadingForm
+        v-else
+        :isLoading="artistsStore.isLoading"
+        :recordName="'artists'"
+        :emptyRecordMessage="emptyRecordMessage"
+      />
     </div>
   </div>
 </template>
@@ -38,6 +51,7 @@ import DateForm from '@/components/DateForm.vue';
 import CheckForm from '@/components/CheckForm.vue';
 import DupCheckForm from '@/components/DupCheckForm.vue';
 import ArtistsTable from '@/components/layout/ArtistsTable.vue';
+import LoadingForm from '@/components/LoadingForm.vue';
 
 const artistsStore = useArtistsStore();
 
@@ -51,6 +65,8 @@ const sort = {
   state: ref(createSortState<Artist>('name')),
   field: '' as keyof Artist,
 };
+const emptyRecordMessage = 'No artists available. Sync your library.';
+
 const artists = computed(() => {
   let records = artistsStore.artists;
   records = filterByIdentificationStatus(records, identified.value, unidentified.value) as Artist[];

@@ -1,9 +1,11 @@
 <template>
   <div class="container">
-    <h1>Tracks</h1>
+    <header class="page-header">
+      <h1>Tracks</h1>
+    </header>
     <div class="sync_records">
       <div>Tracks count: {{ tracks.length }}</div>
-      <button @click="handleSync" class="button">Sync tracks</button>
+      <button @click="handleSync" class="btn-sync">Sync tracks</button>
     </div>
     <div class="filters">
       <SearchForm @search="handleSearch" />
@@ -17,7 +19,18 @@
       </div>
     </div>
     <div class="table-wrap">
-      <TracksTable :tracks="tracks" @handle-sort="handleSort" />
+      <TracksTable
+        :tracks="tracks"
+        @handle-sort="handleSort"
+        :showActionsCol="true"
+        v-if="tracks.length > 0"
+      />
+      <LoadingForm
+        v-else
+        :isLoading="tracksStore.isLoading"
+        :recordName="'tracks'"
+        :emptyRecordMessage="emptyRecordMessage"
+      />
     </div>
   </div>
 </template>
@@ -41,6 +54,7 @@ import DateForm from '@/components/DateForm.vue';
 import CheckForm from '@/components/CheckForm.vue';
 import DupCheckForm from '@/components/DupCheckForm.vue';
 import TracksTable from '@/components/layout/TracksTable.vue';
+import LoadingForm from '@/components/LoadingForm.vue';
 
 const tracksStore = useTracksStore();
 
@@ -54,6 +68,8 @@ const sort = {
   state: ref(createSortState<Track>('title')),
   field: '' as keyof Track,
 };
+const emptyRecordMessage = 'No tracks available. Sync your library.';
+
 const tracks = computed(() => {
   let records = tracksStore.tracks;
   records = filterByIdentificationStatus(records, identified.value, unidentified.value) as Track[];
