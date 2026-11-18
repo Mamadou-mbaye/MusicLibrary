@@ -12,13 +12,13 @@ public static class Api
 			app.MapGet("/api/navidrome/albumList2", NavidromeApi.GetAlbumList2).WithName("NavidromeAlbumList2");
 			app.MapGet("/api/navidrome/search3", NavidromeApi.SearchAllSongs).WithName("NavidromeSearchAllSongs");
 		}
-		{ 
+		{
 			// database endpoints 
 			app.MapGet("/api/database/ping", DatabaseApi.TestConnection).WithName("DBTestConnection");
-	
+
 			app.MapGet("/api/artists", DatabaseApi.GetArtists).WithName("DBArtists");
 			app.MapPost("/api/artists/sync", DatabaseApi.SyncArtists).WithName("DBSyncArtists");
-	
+
 			app.MapGet("/api/albums", DatabaseApi.GetAlbums).WithName("DBAlbums");
 			app.MapPost("/api/albums/sync", DatabaseApi.SyncAlbums).WithName("DBSyncAlbums");
 
@@ -28,6 +28,7 @@ public static class Api
 		{
 			//Tags endpoints
 			app.MapGet("/api/tracks/readTags/{filename}", TrackTagsApi.ReadTags).WithName("ReadTags");
+			app.MapPost("/api/tracks/saveTags", TrackTagsApi.SaveTags).WithName("SaveTags");
 		}
 	}
 	public static async Task<IResult> Test()
@@ -40,5 +41,4 @@ public static class Api
 		}
 		);
 	}
-
 }

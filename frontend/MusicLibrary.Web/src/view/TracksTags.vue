@@ -4,52 +4,49 @@
       <h1>Track Tags</h1>
     </header>
 
-    <form v-if="tracksTags" class="tags-form" @submit.prevent="save">
+    <form v-if="tracksTags" class="tags-form" @submit.prevent="trackTagsSave">
       <div class="fields-grid">
         <label for="track-title">
           Title
-          <input id="track-title" v-model="tracksTags.title" type="text">
+          <input id="track-title" v-model="tracksTags.title" type="text" />
         </label>
         <label for="track-artist">
           Artist
-          <input id="track-artist" v-model="tracksTags.artist" type="text">
-        </label>
-        <label for="track-artist-id">
-          Artist ID
-          <input id="track-artist-id" v-model.number="tracksTags.artistId" type="number">
+          <input id="track-artist" v-model="tracksTags.artist" type="text" />
         </label>
         <label for="track-album">
           Album
-          <input id="track-album" v-model="tracksTags.album" type="text">
-        </label>
-        <label for="track-album-id">
-          Album ID
-          <input id="track-album-id" v-model.number="tracksTags.albumId" type="number">
+          <input id="track-album" v-model="tracksTags.album" type="text" />
         </label>
         <label for="track-number">
           Track Number
-          <input id="track-number" v-model.number="tracksTags.trackNumber" type="number">
+          <input id="track-number" v-model.number="tracksTags.trackNumber" type="number" />
         </label>
         <label for="disc-number">
           Disc Number
-          <input id="disc-number" v-model.number="tracksTags.discNumber" type="number">
+          <input id="disc-number" v-model.number="tracksTags.discNumber" type="number" />
         </label>
         <label for="track-genre">
           Genre
-          <input id="track-genre" v-model="tracksTags.genre" type="text">
+          <input id="track-genre" v-model="tracksTags.genre" type="text" />
         </label>
         <label for="track-year">
           Year
-          <input id="track-year" v-model.number="tracksTags.year" type="number">
+          <input id="track-year" v-model.number="tracksTags.year" type="number" />
         </label>
         <label for="file-name">
           filename
-          <input id="file-name" v-model="tracksTags.fileName" type="text">
+          <input id="file-name" v-model="tracksTags.fileName" type="text" />
         </label>
       </div>
       <button type="submit" class="btn-primary">Save</button>
     </form>
-    <LoadingForm v-else :isLoading="isLoading" recordName="tags" :emptyRecordMessage="emptyRecordMessage" />
+    <LoadingForm
+      v-else
+      :isLoading="isLoading"
+      recordName="tags"
+      :emptyRecordMessage="emptyRecordMessage"
+    />
   </div>
 </template>
 <style scoped>
@@ -87,7 +84,7 @@ label {
 input {
   box-sizing: border-box;
   width: 100%;
-  min-height: 2.30rem;
+  min-height: 2.3rem;
 }
 
 button {
@@ -107,34 +104,42 @@ const tracksTags = ref<TrackTags>();
 const isLoading = ref(true);
 const tracksStore = useTracksStore();
 
-const emptyRecordMessage = ref("No tags available for this track.");
+const emptyRecordMessage = ref('No tags available for this track.');
 
 const route = useRoute();
 const trackId = computed(() => {
   const id = route.params.id;
   return typeof id === 'string' ? Number(id) : null;
 });
-const TrackTagsLoad = async () => {
+const trackTagsLoad = async () => {
   try {
-    const track = tracksStore.tracks.find(t => t.id === trackId.value) as Track
-    if (!track) return
-    const fileName = getFilenameSplit(track.path)
+    const track = tracksStore.tracks.find((t) => t.id === trackId.value) as Track;
+    if (!track) return;
+    const fileName = getFilenameSplit(track.path);
 
     emptyRecordMessage.value = `No tags available for ${fileName}.`;
-    const { data } = await apiClient.get("/tracks/readTags/" + fileName);
+    const { data } = await apiClient.get('/tracks/readTags/' + fileName);
     tracksTags.value = data.trackTags;
   } catch (error) {
     console.error(error);
   } finally {
     isLoading.value = false;
   }
-}
+};
+const trackTagsSave = async () => {
+  try {
+    const { data } = await apiClient.post('/tracks/saveTags/', tracksTags.value);
+    console.log(data.saved);
+  } catch (error) {
+    console.error(error);
+  }
+};
 const getFilenameSplit = (path: string) => {
   return path.split(/[\\/]/).pop() ?? path;
-}
-const save = () => { }
+};
+
 onMounted(async () => {
   await tracksStore.TracksLoad();
-  await TrackTagsLoad();
+  await trackTagsLoad();
 });
 </script>

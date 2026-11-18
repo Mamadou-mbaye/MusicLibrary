@@ -82,7 +82,7 @@ This project is licensed under the [MIT License](LICENSE).
 - [ ] Listening statistics
 - [ ] Wishlist for albums or artists to explore
 - [ ] Metadata correction workflow
-- [ ] Tag editing with TagLib#
+- [x] Tag editing with TagLib#
 - [ ] User authentication
 - [ ] Docker Compose deployment
 

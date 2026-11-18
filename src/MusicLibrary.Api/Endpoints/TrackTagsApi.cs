@@ -19,5 +19,17 @@ public class TrackTagsApi
             timestamputc = DateTime.UtcNow
         });
     }
+    public static async Task<IResult> SaveTags(ITagReaderService tagReaderService, IConfiguration configuration, TrackTags trackTags)
+    {
+        var filesPath = configuration["FilesPath"];
+        if (string.IsNullOrWhiteSpace(filesPath)) return Results.Problem("Files path not configured.");
+
+        bool saved = await tagReaderService.SaveTags(filesPath, trackTags);
+        return Results.Json(new
+        {
+            saved,
+            timestamputc = DateTime.UtcNow
+        });
+    }
 }
 

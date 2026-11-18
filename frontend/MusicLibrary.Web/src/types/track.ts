@@ -14,9 +14,7 @@ export interface Track {
 export interface TrackTags {
   title: string;
   artist: string;
-  artistId: number;
   album: string;
-  albumId: number;
   trackNumber: number;
   discNumber: number;
   genre: string;
